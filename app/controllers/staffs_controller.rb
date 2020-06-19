@@ -12,14 +12,14 @@ class StaffsController < ApplicationController
   end
 
   def update 
-    @staff = Staff.find(params[:id])
-    @user.update_attributes(params.permit(:badge, :first_name, :last_name, :email, :phone))
+    staff = Staff.find(params[:id])
+    staff.update_attributes(params.permit(:badge, :first_name, :last_name, :email, :phone))
     redirect_to dashboard_path
   end
 
   def destroy 
-    @staff = Staff.find([:id])
-    @staff.destroy
+    staff = Staff.find(params[:id])
+    staff.destroy
     redirect_to dashboard_path
   end
 end
