@@ -1,4 +1,4 @@
-class StaffController < ApplicationController 
+class StaffsController < ApplicationController 
   before_action :authenticate_user!
 
   def create  

@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'dashboard#index'
 
   resources :staffs
+  resources :rooms
   
   devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' }
 end
