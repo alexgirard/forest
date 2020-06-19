@@ -1,6 +1,6 @@
 import React from 'react';
 
-class Dashboard extends React.Component {
+class StaffDetails extends React.Component {
   render() {
     return (
       <h1>Staff Details</h1>
@@ -8,4 +8,4 @@ class Dashboard extends React.Component {
   }
 };
 
-export default Dashboard;
+export default StaffDetails;
