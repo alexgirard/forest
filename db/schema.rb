@@ -10,10 +10,62 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_19_142135) do
+ActiveRecord::Schema.define(version: 2020_06_19_171229) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "entries", force: :cascade do |t|
+    t.bigint "staff_id"
+    t.bigint "room_id"
+    t.datetime "time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["room_id"], name: "index_entries_on_room_id"
+    t.index ["staff_id"], name: "index_entries_on_staff_id"
+  end
+
+  create_table "infections", force: :cascade do |t|
+    t.bigint "patient_id"
+    t.text "notes"
+    t.datetime "start"
+    t.datetime "end"
+    t.integer "incubation"
+    t.integer "steps"
+    t.index ["patient_id"], name: "index_infections_on_patient_id"
+  end
+
+  create_table "patient_locations", force: :cascade do |t|
+    t.bigint "room_id"
+    t.bigint "patient_id"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["patient_id"], name: "index_patient_locations_on_patient_id"
+    t.index ["room_id"], name: "index_patient_locations_on_room_id"
+  end
+
+  create_table "patients", force: :cascade do |t|
+    t.integer "hospital_id", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.string "identifier", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "staffs", force: :cascade do |t|
+    t.integer "badge", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.string "email"
+    t.string "phone"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
