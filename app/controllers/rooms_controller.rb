@@ -3,26 +3,24 @@ class RoomsController < ApplicationController
 
   def create  
     # TODO: Error check for staff that already exists
-    @room = Room.create(params.require(:identifer))
+    room = Room.create(params.require(:room).permit(:identifer))
     redirect_to dashboard_path
   end
 
   def show 
-    @room = Room.find(params[:id])
-    # TODO: render component: ''
+    room = Room.find(params[:id])
+    render component: 'RoomDetails', props: {room: room}
   end
 
-  # TODO: Add edit if needed
-
   def update 
-    @room = Room.find(params[:id])
-    @room.update_attributes(params.permit(:identifier))
+    room = Room.find(params[:id])
+    room.update_attributes(params.permit(:identifier))
     redirect_to dashboard_path
   end
 
   def destroy 
-    @room = Room.find([:id])
-    @room.destroy
+    room = Room.find(params[:id])
+    room.destroy
     redirect_to dashboard_path
   end
 end
