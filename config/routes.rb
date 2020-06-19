@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   root 'homepage#index'
-  get 'dashboard', to: 'dashboard#index'
+  get 'dashboard', to: 'dashboards#index'
 
   resources :staffs
   resources :rooms
