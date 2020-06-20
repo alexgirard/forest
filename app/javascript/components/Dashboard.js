@@ -19,7 +19,7 @@ const TopBar = () => (
 );
 
 const Dashboard = ({staff, patients, rooms, infections}) => {
-  const [curTab, switchTab] = useState("People");
+  const [curTab, switchTab] = useState("Dashboard");
 
   const tabs = [
     { icon: "fa-table",  name: "Dashboard", component: <p>dash</p> },
