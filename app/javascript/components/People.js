@@ -96,8 +96,7 @@ const InfectionInfo = ({ infections }) => (
   <tbody>
     {infections.map(i => (
         <tr key={i.id}>
-          <td>{`${i.patient.hospital_id}`}</td>
-          <td>{`${i.notes}`}</td>
+          <td>Patient ID</td>
           <td>{`${i.notes}`}</td>
           <td>{`${i.start}`}</td>
           <td>{`${i.end}`}</td>
@@ -136,7 +135,7 @@ const People = ({ staff, patients, rooms, infections }) => {
             'patients': <PatientInfo patients={patients}/>,
             'staff': <StaffInfo staff={staff}/>,
             'rooms': <RoomInfo rooms={rooms}/>,
-            'infection': <InfectionInfo infections={infections}/>
+            'infections': <InfectionInfo infections={infections}/>
           }[peopleTab]
         }
       </StyledTable>
