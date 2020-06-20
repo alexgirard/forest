@@ -19,16 +19,16 @@ const TopBar = () => (
   </TopBarContainer>
 );
 
-const tabs = [
-  { icon: "fa-table",  name: "dashboard", component: <p>dash</p> },
-  { icon: "fa-user",   name: "people",    component: <People /> },
-  { icon: "fa-fire",   name: "outbreak",  component: <Outbreaks /> },
-];
-
-const TabContent = ({ curTab }) => tabs.find(tab => tab.name === curTab).component || null;
-
-const Dashboard = () => {
+const Dashboard = ({staff, patients, rooms}) => {
   const [curTab, switchTab] = useState("outbreak");
+
+  const tabs = [
+    { icon: "fa-table",  name: "dashboard", component: <p>dash</p> },
+    { icon: "fa-user",   name: "people",    component: <People staff={staff} patients={patients} rooms={rooms}/> },
+    { icon: "fa-fire",   name: "outbreak",  component: <Outbreaks /> },
+  ];
+
+  const TabContent = ({ curTab }) => tabs.find(tab => tab.name === curTab).component || null;
 
   return ( 
     <>

@@ -4,10 +4,10 @@ import { Table } from 'react-bootstrap';
 
 import AddModal from './AddModal';
 
-const roomEntries = { title: "room entries", btn: "add room", headings: ["room id", "staff id", "time"] };
-const patients = { title: "patients", btn: "add patient", headings: ["patient id", "room id", "room admittance", "room discharge"] };
-const staff = { title: "staff", btn: "add staff", headings: ["staff id", "last name", "first name", "email", "phone"] };
-const peopleTabs = [roomEntries, patients, staff];
+const rooms = { title: "rooms", btn: "add room", headings: ["room id", "identifer", "patient_id"] };
+const patients = { title: "patients", btn: "add patient", headings: ["patient id", "room", "room admittance", "room discharge"] };
+const staff = { title: "staff", btn: "add staff", headings: ["badge", "first name", "last name", "email", "phone"] };
+const peopleTabs = [rooms, patients, staff];
 
 const TabUnderline = styled.div`
   border-bottom: ${props => props.active ? "3px solid black" : "none"};
@@ -52,10 +52,53 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const People = ({ patients, staff, rooms }) => {
+const StaffInfo = ({ staff }) => (
+  <tbody>
+    {staff.map(s => (
+        <tr key={s.id}>
+          <td>{`${s.badge}`}</td>
+          <td>{`${s.first_name}`}</td>
+          <td>{`${s.last_name}`}</td>
+          <td>{`${s.email}`}</td>
+          <td>{`${s.phone}`}</td>
+        </tr>
+    ))}
+  </tbody>
+);
+
+const PatientInfo = ({ patients }) => (
+  <tbody>
+    {patients.map(p => (
+        <tr key={p.id}>
+          <td>{`${p.hospital_id}`}</td>
+          <td>Room</td>
+          <td>Start time</td>
+          <td>End time</td>
+        </tr>
+    ))}
+  </tbody>
+);
+
+const RoomInfo = ({ rooms }) => (
+  <tbody>
+    {rooms.map(r => (
+        <tr key={r.id}>
+          <td>{`${r.id}`}</td>
+          <td>{`${r.identifer}`}</td>
+          <td>Patient Hospital ID</td>
+        </tr>
+    ))}
+  </tbody>
+);
+
+const People = ({ staff, patients, rooms }) => {
   const [peopleTab, switchPeopleTab] = useState(peopleTabs[0].title);
   const [modalShow, setModalShow] = useState(false);
   const peopleTabInfo = peopleTabs.find(tab => tab.title == peopleTab);
+
+  const submitForm = () => {
+    console.log('submit');
+  }
 
   return (
     <div className="p-5 m-2">
@@ -71,22 +114,16 @@ const People = ({ patients, staff, rooms }) => {
             {peopleTabInfo.headings.map(heading => <th>{heading}</th>)}
           </tr>
         </thead>
-        <tbody>
-          {/* FIXME: add onClick Modal */}
-          <tr> 
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Jacob</td>
-            <td>Thornton</td>
-          </tr>
-        </tbody>
+        {
+          {
+            'patients': <PatientInfo patients={patients}/>,
+            'staff': <StaffInfo staff={staff}/>,
+            'rooms': <RoomInfo rooms={rooms}/>
+          }[peopleTab]
+        }
       </StyledTable>
 
-      <AddModal show={modalShow} onHide={() => setModalShow(false)} peopleTabInfo={peopleTabInfo} />
+      <AddModal show={modalShow} onSubmit={submitForm} onHide={() => setModalShow(false)} peopleTabInfo={peopleTabInfo} type={peopleTab} />
     </div>
   );
 };

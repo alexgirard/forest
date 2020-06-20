@@ -27,7 +27,7 @@ const AddModal = ({ peopleTabInfo, ...restProps }) => (
         </Form.Group>
       ))}
 
-      <StyledButton className="py-2" type="submit" onClick={restProps.onHide}>
+      <StyledButton className="py-2" type="submit" onClick={restProps.onSubmit}>
         Submit
       </StyledButton>
     </Form>
