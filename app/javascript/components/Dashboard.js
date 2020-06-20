@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import SideBar from './SideBar';
+import People from './People';
+import Outbreaks from './Outbreaks';
 
 const Dot = styled.span`color: rgba(14, 103, 23, 0.5);`;
 const Logo = () => <h1>forest<Dot>.</Dot></h1>
@@ -18,15 +20,15 @@ const TopBar = () => (
 );
 
 const tabs = [
-  { icon: "graph",  name: "dashboard", component: <p>dash</p> },
-  { icon: "person", name: "people",    component: <p>people</p> },
-  { icon: "fire",   name: "outbreak",  component: <p>out</p> },
+  { icon: "fa-table",  name: "dashboard", component: <p>dash</p> },
+  { icon: "fa-user",   name: "people",    component: <People /> },
+  { icon: "fa-fire",   name: "outbreak",  component: <Outbreaks /> },
 ];
 
 const TabContent = ({ curTab }) => tabs.find(tab => tab.name === curTab).component || null;
 
 const Dashboard = () => {
-  const [curTab, switchTab] = useState("dashboard");
+  const [curTab, switchTab] = useState("outbreak");
 
   return ( 
     <>
