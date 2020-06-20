@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Card, Form, Container } from 'react-bootstrap';
+import { Card, Form, Container, ProgressBar } from 'react-bootstrap';
 
 const Grid = styled.div`
   display: grid;
@@ -20,6 +20,14 @@ const Radio = styled(Card)`
   }
 `;
 
+const Progress = styled(ProgressBar)`
+  margin-bottom: 2rem;
+
+  .progress-bar {
+    background-color: rgba(14, 103, 23, 0.5);
+  }
+`;
+
 const StyledButton = styled.button`
   unset: all;
   padding: 0.5rem 1rem;
@@ -27,6 +35,8 @@ const StyledButton = styled.button`
   border: none;
   color: rgba(14, 103, 23, 0.5);
   border-radius: 40px;
+  width: min-content;
+  white-space: nowrap;
 
   :focus {
     outline: none;
@@ -105,7 +115,7 @@ const NotifyStep = ({ nextStep, updateField }) => {
           <Container>
             <h5 className="my-4">Below are the staff members that have come in contact with this patient within the specified incubation period. By clicking next we will notify them that they have come in contact.</h5>
             <p>[table here]</p>
-            <StyledButton className="my-4 w-auto" onClick={() => { updateField(true); nextStep(); }}>Send notifications</StyledButton>
+            <StyledButton className="my-4 w-auto" onClick={() => { updateField(period); nextStep(); }}>Send notifications</StyledButton>
           </Container>
         </>
       )}
@@ -155,11 +165,14 @@ const Outbreaks = ({ }) => {
       changeStep(curStep + 1);
     }
   }
+  const back = () => changeStep(curStep - 1);
   const updateField = value => updateInfo({ ...info, [steps[curStep]]: value });
   
   return (
     <div className="p-5 mt-5 d-flex flex-column justfiy-content-center text-center">
+      <Progress now={((curStep+1)/steps.length) * 100} />
       <StepContent curStep={curStep} nextStep={nextStep} updateField={updateField} />
+      {curStep != 0 && <StyledButton className="my-4 d-block" onClick={() => back()}> ← Back</StyledButton>}
     </div>
   );
 };
