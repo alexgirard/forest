@@ -115,7 +115,7 @@ const NotifyStep = ({ nextStep, updateField }) => {
           <Container>
             <h5 className="my-4">Below are the staff members that have come in contact with this patient within the specified incubation period. By clicking next we will notify them that they have come in contact.</h5>
             <p>[table here]</p>
-            <StyledButton className="my-4 w-auto" onClick={() => { updateField(true); nextStep(); }}>Send notifications</StyledButton>
+            <StyledButton className="my-4 w-auto" onClick={() => { updateField(period); nextStep(); }}>Send notifications</StyledButton>
           </Container>
         </>
       )}
