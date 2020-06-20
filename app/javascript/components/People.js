@@ -7,7 +7,8 @@ import AddModal from './AddModal';
 const rooms = { title: "rooms", btn: "add room", headings: ["room id", "identifer", "patient_id"] };
 const patients = { title: "patients", btn: "add patient", headings: ["patient id", "room", "room admittance", "room discharge"] };
 const staff = { title: "staff", btn: "add staff", headings: ["badge", "first name", "last name", "email", "phone"] };
-const peopleTabs = [rooms, patients, staff];
+const infections = { title: "infections", btn: "add infection", headings: ["patient", "notes", "start", "end", "incubation"] };
+const peopleTabs = [rooms, patients, staff, infections];
 
 const TabUnderline = styled.div`
   border-bottom: ${props => props.active ? "3px solid black" : "none"};
@@ -91,7 +92,22 @@ const RoomInfo = ({ rooms }) => (
   </tbody>
 );
 
-const People = ({ staff, patients, rooms }) => {
+const InfectionInfo = ({ infections }) => (
+  <tbody>
+    {infections.map(i => (
+        <tr key={i.id}>
+          <td>{`${i.patient.hospital_id}`}</td>
+          <td>{`${i.notes}`}</td>
+          <td>{`${i.notes}`}</td>
+          <td>{`${i.start}`}</td>
+          <td>{`${i.end}`}</td>
+          <td>{`${i.incubation}`}</td>
+        </tr>
+    ))}
+  </tbody>
+);
+
+const People = ({ staff, patients, rooms, infections }) => {
   const [peopleTab, switchPeopleTab] = useState(peopleTabs[0].title);
   const [modalShow, setModalShow] = useState(false);
   const peopleTabInfo = peopleTabs.find(tab => tab.title == peopleTab);
@@ -99,6 +115,7 @@ const People = ({ staff, patients, rooms }) => {
   const submitForm = () => {
     console.log('submit');
   }
+  console.log(infections);
 
   return (
     <div className="p-5 m-2">
@@ -118,7 +135,8 @@ const People = ({ staff, patients, rooms }) => {
           {
             'patients': <PatientInfo patients={patients}/>,
             'staff': <StaffInfo staff={staff}/>,
-            'rooms': <RoomInfo rooms={rooms}/>
+            'rooms': <RoomInfo rooms={rooms}/>,
+            'infection': <InfectionInfo infections={infections}/>
           }[peopleTab]
         }
       </StyledTable>

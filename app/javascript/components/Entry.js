@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import EntryForm from './EntryForm';
-
 const Dot = styled.span`color: rgba(14, 103, 23, 0.5);`;
 const Logo = () => <h1>forest<Dot>.</Dot></h1>
 
