@@ -60,8 +60,8 @@ const StatusStep = props => (
   <StepTemplate
     desc="Please select if the case is confirmed or suspected to continue."
     btns={[
-      { icon: "fa-check", name: "confirmed" },
-      { icon: "fa-search", name: "suspected" },
+      { icon: "fa-check", name: "Confirmed" },
+      { icon: "fa-search", name: "Suspected" },
     ]}
     {...props}
   />
@@ -71,9 +71,9 @@ const HaiStep = props => (
   <StepTemplate
     desc="Was this a hospital acquired infection(HAI)?"
     btns={[
-      { icon: "fa-check", name: "yes" },
-      { icon: "fa-times", name: "no" },
-      { icon: "fa-question", name: "unknown" },
+      { icon: "fa-check", name: "Yes" },
+      { icon: "fa-times", name: "No" },
+      { icon: "fa-question", name: "Unknown" },
     ]}
     {...props}
   />
@@ -84,7 +84,7 @@ const PatientStep = ({ nextStep, updateField }) => (
     <h5 className="mb-4">Please enter the patient id.</h5>
     <Container>
       <Form.Control type="text" placeholder="patient id" onChange={event => updateField(event.target.value)} />
-      <StyledButton className="my-4 w-auto" onClick={() => nextStep()}>next step</StyledButton>
+      <StyledButton className="my-4 w-auto" onClick={() => nextStep()}>Next step</StyledButton>
     </Container>
   </>
 );
@@ -97,15 +97,15 @@ const NotifyStep = ({ nextStep, updateField }) => {
     <>
       <h5 className="mb-4">Please enter the desired incubation period.</h5>
       <Container>
-        <Form.Control type="text" placeholder="incubation period" onChange={event => updatePeriod(event.target.value)} />
-        <StyledButton className="my-4 w-auto" onClick={() => updateShow(true)}>next</StyledButton>
+        <Form.Control type="text" placeholder="Incubation period" onChange={event => updatePeriod(event.target.value)} />
+        <StyledButton className="my-4 w-auto" onClick={() => updateShow(true)}>Next</StyledButton>
       </Container>
       {showResults && (
         <>
           <Container>
             <h5 className="my-4">Below are the staff members that have come in contact with this patient within the specified incubation period. By clicking next we will notify them that they have come in contact.</h5>
             <p>[table here]</p>
-            <StyledButton className="my-4 w-auto" onClick={() => { updateField(true); nextStep(); }}>send notifications</StyledButton>
+            <StyledButton className="my-4 w-auto" onClick={() => { updateField(true); nextStep(); }}>Send notifications</StyledButton>
           </Container>
         </>
       )}
@@ -119,7 +119,7 @@ const ThanksStep = ({ nextStep }) => (
     <Container>
       <i className="pb-3 fa fa-paper-plane fa-5x mr-2" />
       <br />
-      <StyledButton className="my-3 w-auto" onClick={() => nextStep()}>back to outbreak registration</StyledButton>
+      <StyledButton className="my-3 w-auto" onClick={() => nextStep()}>Back to outbreak registration</StyledButton>
     </Container>
   </>
 );
@@ -147,7 +147,7 @@ const Outbreaks = ({ }) => {
   const [info, updateInfo] = useState({});
   
   const nextStep = () => {
-    if (info.status != "confirmed" & curStep == 2) {
+    if (info.status != "Confirmed" & curStep == 2) {
       changeStep(4);
     } else if (curStep == steps.length) {
       changeStep(0);
