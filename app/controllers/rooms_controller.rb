@@ -3,7 +3,7 @@ class RoomsController < ApplicationController
 
   def create  
     # TODO: Error check for staff that already exists
-    room = Room.create(params.require(:room).permit(:identifer))
+    room = Room.create(params.require(:room).permit(:identifier))
     redirect_to dashboard_path
   end
 

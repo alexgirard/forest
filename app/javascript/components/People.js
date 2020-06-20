@@ -4,12 +4,11 @@ import { Table, FormData } from 'react-bootstrap';
 
 import AddModal from './AddModal';
 
-const rooms = { title: "Rooms", btn: "Add Room", headings: [
-  { name: "Room Id", id: "room_id" },
+const rooms = { object: "room", title: "Rooms", btn: "Add Room", headings: [
   { name: "Identifer", id: "identifier" },
   { name: "Patient Id", id: "patient_id" },
 ]};
-const patients = { title: "Patients", btn: "Add Patient", headings: [
+const patients = { object: "patient", title: "Patients", btn: "Add Patient", headings: [
   { name: "Patient Id", id: "patient_id" },
   { name: "Room Id", id: "identifier" },
   { name: "Room Admittance", id: "start_time" },
@@ -80,7 +79,6 @@ const StyledTable = styled(Table)`
 
 const StaffInfo = ({ staff }) => {
   const handleStaffDelete = id => {
-    console.log(id);
     var token = document.getElementsByName('csrf-token')[0].content
     fetch(`http://localhost:3000/staffs/${id}`, 
     {
@@ -111,7 +109,6 @@ const StaffInfo = ({ staff }) => {
 
 const PatientInfo = ({ patients }) => {
   const handlePatientDelete = id => {
-    console.log(id);
     var token = document.getElementsByName('csrf-token')[0].content
     fetch(`http://localhost:3000/patients/${id}`, 
     {
@@ -157,8 +154,7 @@ const RoomInfo = ({ rooms }) => {
     <tbody>
       {rooms.map(r => (
           <tr key={r.id}>
-            <td>{`${r.id}`}</td>
-            <td>{`${r.identifer}`}</td>
+            <td>{`${r.identifier}`}</td>
             <td>Patient Hospital ID</td>
             <td><button>Edit</button><button onClick={() => handleRoomDelete(r.id)}>Delete</button></td>
           </tr>
@@ -187,9 +183,35 @@ const People = ({ staff, patients, rooms, infections }) => {
   const peopleTabInfo = peopleTabs.find(tab => tab.title == peopleTab);
 
   const submitForm = (title, form) => {
-    const submitObject = { [title.toLowerCase()] : { ...form }};
+    const submitObject = { [title] : { ...form }};
     console.log(submitObject);
-    event.preventDefault();
+    //event.preventDefault();
+    var token = document.getElementsByName('csrf-token')[0].content
+    switch(title) {
+      case 'room': 
+        fetch('http://localhost:3000/rooms', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': token
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify(submitObject),
+        })
+        break;
+      case 'patient':
+        fetch('http://localhost:3000/patients', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': token
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify(submitObject),
+        })
+        break;
+    }
+
   }
 
   return (
@@ -208,10 +230,10 @@ const People = ({ staff, patients, rooms, infections }) => {
         </thead>
         {
           {
-            'patients': <PatientInfo patients={patients}/>,
-            'staff': <StaffInfo staff={staff}/>,
-            'rooms': <RoomInfo rooms={rooms}/>,
-            'infections': <InfectionInfo infections={infections}/>
+            'Patients': <PatientInfo patients={patients}/>,
+            'Staff': <StaffInfo staff={staff}/>,
+            'Rooms': <RoomInfo rooms={rooms}/>,
+            'Infections': <InfectionInfo infections={infections}/>
           }[peopleTab]
         }
       </StyledTable>
