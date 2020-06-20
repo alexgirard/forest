@@ -11,9 +11,9 @@ const rooms = { object: "room", title: "Rooms", btn: "Add Room", headings: [
 ]};
 const patients = { object: "patient", title: "Patients", btn: "Add Patient", headings: [
   { name: "Hospital Id", id: "hospital_id" },
-  { name: "Room Id", id: "room_id" },
-  { name: "Room Admittance", id: "start_time" },
-  { name: "Room Discharge", id: "end_time" },
+  { name: "Room Id", id: "current_room" },
+  { name: "Room Admittance", id: "entry_time" },
+  { name: "Room Discharge", id: "exit_time" },
 ]};
 const staff = { object: "staff", title: "Staff", btn: "Add Staff", headings: [
   { name: "Badge #", id: "badge" },
@@ -22,7 +22,7 @@ const staff = { object: "staff", title: "Staff", btn: "Add Staff", headings: [
   { name: "Email", id: "email" },
   { name: "Phone", id: "phone" },
 ]};
-const infections = { title: "Infections", headings: [
+const infections = { object: "infection", title: "Infections", headings: [
   { name: "Patient", id: "patient_id" },
   { name: "Notes", id: "notes" },
   { name: "Status", id: "status" },
@@ -96,19 +96,33 @@ const StaffInfo = ({ staff, ...props }) => {
     })
   }
 
+  const submitEdit = (id, title, form) => {
+    const submitObject = { [title] : { ...form }};
+    var token = document.getElementsByName('csrf-token')[0].content
+    fetch(`http://localhost:3000/staffs/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': token,
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(submitObject),
+    })
+  }
+
   return(
     <tbody>
       {staff.map(s => (
-          <tr key={s.id}>
-            <td>{`${s.badge}`}</td>
-            <td>{`${s.first_name}`}</td>
-            <td>{`${s.last_name}`}</td>
-            <td>{`${s.email}`}</td>
-            <td>{`${s.phone}`}</td>
-            <td><button onClick={() => setEditInfo(s)}>Edit</button><button onClick={() => handleStaffDelete(s.id)}>Delete</button></td>
-          </tr>
+        <tr key={s.id}>
+          <td>{`${s.badge}`}</td>
+          <td>{`${s.first_name}`}</td>
+          <td>{`${s.last_name}`}</td>
+          <td>{`${s.email}`}</td>
+          <td>{`${s.phone}`}</td>
+          <td><button onClick={() => setEditInfo(s)}>Edit</button><button onClick={() => handleStaffDelete(s.id)}>Delete</button></td>
+        </tr>
       ))}
-      <EditModal modalTitle="Edit Staff" show={!!editInfo} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
+      <EditModal modalTitle="Edit Staff" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
     </tbody>
   )
 }
@@ -129,18 +143,32 @@ const PatientInfo = ({ patients, ...props }) => {
     })
   }
 
+  const submitEdit = (id, title, form) => {
+    const submitObject = { [title] : { ...form }};
+    var token = document.getElementsByName('csrf-token')[0].content
+    fetch(`http://localhost:3000/patients/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': token,
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(submitObject),
+    })
+  }
+
   return(
     <tbody>
       {patients.map(p => (
-          <tr key={p.id}>
-            <td>{`${p.hospital_id}`}</td>
-            <td>{`${p.current_room}`}</td>
-            <td>{`${p.entry_time}`}</td>
-            <td>{`${p.exit_time}`}</td>
-            <td><button onClick={() => setEditInfo(p)}>Edit</button><button onClick={() => handlePatientDelete(p.id)}>Delete</button></td>
-          </tr>
+        <tr key={p.id}>
+          <td>{`${p.hospital_id}`}</td>
+          <td>{`${p.current_room}`}</td>
+          <td>{`${p.entry_time}`}</td>
+          <td>{`${p.exit_time}`}</td>
+          <td><button onClick={() => setEditInfo(p)}>Edit</button><button onClick={() => handlePatientDelete(p.id)}>Delete</button></td>
+        </tr>
       ))}
-      <EditModal modalTitle="Edit Patient" show={!!editInfo} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
+      <EditModal modalTitle="Edit Patient" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
     </tbody>
   )
 }
@@ -160,23 +188,66 @@ const RoomInfo = ({ rooms, ...props }) => {
     })
   }
 
+  const submitEdit = (id, title, form) => {
+    const submitObject = { [title] : { ...form }};
+    var token = document.getElementsByName('csrf-token')[0].content
+    fetch(`http://localhost:3000/rooms/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': token,
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(submitObject),
+    })
+  }
+
   return (
     <tbody>
       {rooms.map(r => (
-          <tr key={r.id}>
-            <td>{`${r.identifier}`}</td>
-            <td>{`${r.current_patient}`}</td>
-            <td><button onClick={() => setEditInfo(r)}>Edit</button><button onClick={() => handleRoomDelete(r.id)}>Delete</button></td>
-          </tr>
+        <tr key={r.id}>
+          <td>{`${r.identifier}`}</td>
+          <td>{`${r.current_patient}`}</td>
+          <td><button onClick={() => setEditInfo(r)}>Edit</button><button onClick={() => handleRoomDelete(r.id)}>Delete</button></td>
+        </tr>
       ))}
-      <EditModal modalTitle="Edit Room" show={!!editInfo} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
+      <EditModal modalTitle="Edit Room" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
     </tbody>
   )
 }
 
-const InfectionInfo = ({ infections, ...props }) => (
-  <tbody>
-    {infections.map(i => (
+const InfectionInfo = ({ infections, ...props }) => {
+  const [editInfo, setEditInfo] = useState(false);
+  const handleInfectionDelete = id => {
+    var token = document.getElementsByName('csrf-token')[0].content
+    fetch(`http://localhost:3000/infections/${id}`, 
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': token,
+      },
+      credentials: 'same-origin',
+    })
+  }
+
+  const submitEdit = (id, title, form) => {
+    const submitObject = { [title] : { ...form }};
+    var token = document.getElementsByName('csrf-token')[0].content
+    fetch(`http://localhost:3000/infections/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': token,
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(submitObject),
+    })
+  }
+
+  return(
+    <tbody>
+      {infections.map(i => (
         <tr key={i.id}>
           <td>{`${i.patient_hospital_id}`}</td>
           <td>{`${i.notes}`}</td>
@@ -184,11 +255,14 @@ const InfectionInfo = ({ infections, ...props }) => (
           <td>{`${i.hai}`}</td>
           <td>{`${i.start}`}</td>
           <td>{`${i.end}`}</td>
-          <td>{`${i.incubation}`}</td>
+          <td>{`${i.incubation}`}</td>            
+          <td><button onClick={() => setEditInfo(i)}>Edit</button><button onClick={() => handleInfectionDelete(i.id)}>Delete</button></td>
         </tr>
-    ))}
-  </tbody>
-);
+      ))}
+      <EditModal modalTitle="Edit Room" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
+    </tbody>
+  )
+}
 
 const People = ({ staff, patients, rooms, infections }) => {
   const [peopleTab, switchPeopleTab] = useState(peopleTabs[0].title);

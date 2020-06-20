@@ -32,7 +32,7 @@ const EditModal = ({ info, modalTitle, peopleTabInfo, ...restProps }) => {
         </Form.Group>
       ))}
 
-      <StyledButton className="py-2" type="submit" onClick={() => { restProps.onSubmit(peopleTabInfo.object, form); restProps.onHide(); }}>
+      <StyledButton className="py-2" type="submit" onClick={() => { restProps.onEditSubmit(info.id, peopleTabInfo.object, form); restProps.onHide(); }}>
         Submit
       </StyledButton>
     </Modal>

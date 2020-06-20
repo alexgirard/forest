@@ -13,7 +13,7 @@ class StaffsController < ApplicationController
 
   def update 
     staff = Staff.find(params[:id])
-    staff.update_attributes(params.permit(:badge, :first_name, :last_name, :email, :phone))
+    staff.update_attributes(params.require(:staff).permit(:badge, :first_name, :last_name, :email, :phone))
     redirect_to dashboard_path
   end
 

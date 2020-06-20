@@ -17,6 +17,10 @@ class Patient < ApplicationRecord
     end
   end
 
+  def current_location 
+    PatientLocation.find_by(patient_id: self.id, end_time: nil)
+  end
+
   def entry_time
     location = PatientLocation.find_by(patient_id: self.id, end_time: nil)
     if location
