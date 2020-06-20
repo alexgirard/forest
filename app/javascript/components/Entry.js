@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { Form } from 'react-bootstrap';
 
-const Dot = styled.span`color: rgba(14, 103, 23, 0.5);`;
-const Logo = () => <h1>forest<Dot>.</Dot></h1>
+const LargeLogo = require('../../assets/images/large_logo.png');
 
+const StyledButton = styled.button`
+  unset: all;
+  padding: 0.5rem 1rem;
+  background-color: rgba(14, 103, 23, 0.2);
+  border: none;
+  color: rgba(14, 103, 23, 0.5);
+  border-radius: 40px;
+
+  :focus {
+    outline: none;
+  }
+`;
 
 class Entry extends React.Component {
   constructor(props) {
@@ -45,13 +57,19 @@ class Entry extends React.Component {
 
   render(){
     return (
-      <div class='d-flex justify-content-center align-content-center w-50 h-100 flex-column' style={{margin: 'auto'}}>
-        <Logo />
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" value={this.state.badge} onChange={this.handleBadgeChange} placeholder='badge number'/>
-          <input type="text" value={this.state.room} onChange={this.handleRoomChange} placeholder='room id' />
-          <input type="submit" value="Submit" />
-      </form>
+      <div className="d-flex justify-content-center align-content-center h-100 flex-column m-auto">
+        <div className="m-auto">
+          <img className="w-auto pb-3" src={LargeLogo} />
+          <Form onSubmit={this.handleSubmit} c>
+            <Form.Group>
+              <Form.Control type="text" value={this.state.badge} onChange={this.handleBadgeChange} placeholder='Badge Number' />
+            </Form.Group>
+            <Form.Group>
+              <Form.Control type="text" value={this.state.room} onChange={this.handleRoomChange} placeholder='Room Id' />
+            </Form.Group>
+            <StyledButton className="py-2 my-0 mx-auto d-block" type="submit">Submit</StyledButton>
+          </Form>
+        </div>
       </div>
     );
   }
