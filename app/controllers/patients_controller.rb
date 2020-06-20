@@ -21,6 +21,5 @@ class PatientsController < ApplicationController
   def destroy 
     patient = Patient.find(params[:id])
     patient.destroy
-    redirect_to dashboard_path
   end
 end

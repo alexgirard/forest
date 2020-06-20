@@ -76,44 +76,96 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const StaffInfo = ({ staff }) => (
-  <tbody>
-    {staff.map(s => (
-        <tr key={s.id}>
-          <td>{`${s.badge}`}</td>
-          <td>{`${s.first_name}`}</td>
-          <td>{`${s.last_name}`}</td>
-          <td>{`${s.email}`}</td>
-          <td>{`${s.phone}`}</td>
-        </tr>
-    ))}
-  </tbody>
-);
 
-const PatientInfo = ({ patients }) => (
-  <tbody>
-    {patients.map(p => (
-        <tr key={p.id}>
-          <td>{`${p.hospital_id}`}</td>
-          <td>Room</td>
-          <td>Start time</td>
-          <td>End time</td>
-        </tr>
-    ))}
-  </tbody>
-);
 
-const RoomInfo = ({ rooms }) => (
-  <tbody>
-    {rooms.map(r => (
-        <tr key={r.id}>
-          <td>{`${r.id}`}</td>
-          <td>{`${r.identifer}`}</td>
-          <td>Patient Hospital ID</td>
-        </tr>
-    ))}
-  </tbody>
-);
+const StaffInfo = ({ staff }) => {
+  const handleStaffDelete = id => {
+    console.log(id);
+    var token = document.getElementsByName('csrf-token')[0].content
+    fetch(`http://localhost:3000/staffs/${id}`, 
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': token,
+      },
+      credentials: 'same-origin',
+    })
+  }
+
+  return(
+    <tbody>
+      {staff.map(s => (
+          <tr key={s.id}>
+            <td>{`${s.badge}`}</td>
+            <td>{`${s.first_name}`}</td>
+            <td>{`${s.last_name}`}</td>
+            <td>{`${s.email}`}</td>
+            <td>{`${s.phone}`}</td>
+            <td><button>Edit</button><button onClick={() => handleStaffDelete(s.id)}>Delete</button></td>
+          </tr>
+      ))}
+    </tbody>
+  )
+}
+
+const PatientInfo = ({ patients }) => {
+  const handlePatientDelete = id => {
+    console.log(id);
+    var token = document.getElementsByName('csrf-token')[0].content
+    fetch(`http://localhost:3000/patients/${id}`, 
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': token,
+      },
+      credentials: 'same-origin',
+    })
+  }
+
+  return(
+    <tbody>
+      {patients.map(p => (
+          <tr key={p.id}>
+            <td>{`${p.hospital_id}`}</td>
+            <td>Room</td>
+            <td>Start time</td>
+            <td>End time</td>
+            <td><button>Edit</button><button onClick={() => handlePatientDelete(p.id)}>Delete</button></td>
+          </tr>
+      ))}
+    </tbody>
+  )
+}
+
+const RoomInfo = ({ rooms }) => {
+  const handleRoomDelete = id => {
+    var token = document.getElementsByName('csrf-token')[0].content
+    fetch(`http://localhost:3000/rooms/${id}`, 
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': token,
+      },
+      credentials: 'same-origin',
+    })
+  }
+
+  return (
+    <tbody>
+      {rooms.map(r => (
+          <tr key={r.id}>
+            <td>{`${r.id}`}</td>
+            <td>{`${r.identifer}`}</td>
+            <td>Patient Hospital ID</td>
+            <td><button>Edit</button><button onClick={() => handleRoomDelete(r.id)}>Delete</button></td>
+          </tr>
+      ))}
+    </tbody>
+  )
+}
 
 const InfectionInfo = ({ infections }) => (
   <tbody>
