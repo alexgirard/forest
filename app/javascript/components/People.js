@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Table } from 'react-bootstrap';
 
 import AddModal from './AddModal';
+import EditModal from './EditModal';
 
 const rooms = { object: "room", title: "Rooms", btn: "Add Room", headings: [
   { name: "Identifer", id: "identifier" },
@@ -79,7 +80,9 @@ const StyledTable = styled(Table)`
 
 
 
-const StaffInfo = ({ staff }) => {
+const StaffInfo = ({ staff, ...props }) => {
+  const [editInfo, setEditInfo] = useState(null);
+
   const handleStaffDelete = id => {
     var token = document.getElementsByName('csrf-token')[0].content
     fetch(`http://localhost:3000/staffs/${id}`, 
@@ -102,14 +105,17 @@ const StaffInfo = ({ staff }) => {
             <td>{`${s.last_name}`}</td>
             <td>{`${s.email}`}</td>
             <td>{`${s.phone}`}</td>
-            <td><button>Edit</button><button onClick={() => handleStaffDelete(s.id)}>Delete</button></td>
+            <td><button onClick={() => setEditInfo(s)}>Edit</button><button onClick={() => handleStaffDelete(s.id)}>Delete</button></td>
           </tr>
       ))}
+      <EditModal modalTitle="Edit Staff" show={!!editInfo} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
     </tbody>
   )
 }
 
-const PatientInfo = ({ patients }) => {
+const PatientInfo = ({ patients, ...props }) => {
+  const [editInfo, setEditInfo] = useState(false);
+
   const handlePatientDelete = id => {
     var token = document.getElementsByName('csrf-token')[0].content
     fetch(`http://localhost:3000/patients/${id}`, 
@@ -131,14 +137,16 @@ const PatientInfo = ({ patients }) => {
             <td>Room</td>
             <td>Start time</td>
             <td>End time</td>
-            <td><button>Edit</button><button onClick={() => handlePatientDelete(p.id)}>Delete</button></td>
+            <td><button onClick={() => setEditInfo(p)}>Edit</button><button onClick={() => handlePatientDelete(p.id)}>Delete</button></td>
           </tr>
       ))}
+      <EditModal modalTitle="Edit Patient" show={!!editInfo} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
     </tbody>
   )
 }
 
-const RoomInfo = ({ rooms }) => {
+const RoomInfo = ({ rooms, ...props }) => {
+  // const [editInfo, setEditInfo] = useState(false);
   const handleRoomDelete = id => {
     var token = document.getElementsByName('csrf-token')[0].content
     fetch(`http://localhost:3000/rooms/${id}`, 
@@ -158,14 +166,15 @@ const RoomInfo = ({ rooms }) => {
           <tr key={r.id}>
             <td>{`${r.identifier}`}</td>
             <td>Patient Hospital ID</td>
-            <td><button>Edit</button><button onClick={() => handleRoomDelete(r.id)}>Delete</button></td>
+            <td><button onClick={() => setEditInfo(r)}>Edit</button><button onClick={() => handleRoomDelete(r.id)}>Delete</button></td>
           </tr>
       ))}
+      {/* <EditModal modalTitle="Edit Room" show={!!editInfo} onHide={() => setEditInfo(null)} info={editInfo} {...props} /> */}
     </tbody>
   )
 }
 
-const InfectionInfo = ({ infections }) => (
+const InfectionInfo = ({ infections, ...props }) => (
   <tbody>
     {infections.map(i => (
         <tr key={i.id}>
@@ -243,12 +252,13 @@ const People = ({ staff, patients, rooms, infections }) => {
             {peopleTabInfo.headings.map(({ name }) => <th>{name}</th>)}
           </tr>
         </thead>
+        {/* Change onSubmit below for edit */}
         {
           {
-            'Patients': <PatientInfo patients={patients}/>,
-            'Staff': <StaffInfo staff={staff}/>,
-            'Rooms': <RoomInfo rooms={rooms}/>,
-            'Infections': <InfectionInfo infections={infections}/>
+            'Patients': <PatientInfo patients={patients} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} />,
+            'Staff': <StaffInfo staff={staff} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} />,
+            'Rooms': <RoomInfo rooms={rooms} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} />,
+            'Infections': <InfectionInfo infections={infections} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} />
           }[peopleTab]
         }
       </StyledTable>

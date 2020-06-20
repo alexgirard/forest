@@ -17,22 +17,22 @@ const StyledButton = styled.button`
   }
 `;
 
-const EditModal = ({ dbInfo, peopleTabInfo, ...restProps }) => {
-  const [form, updateForm] = useState({});
+const EditModal = ({ info, modalTitle, peopleTabInfo, ...restProps }) => {
+  const [form, updateForm] = useState(info ? { ...info } : null);
   const update = (key, value) => updateForm({ ...form, [key]: value });
 
-  const getValue = id => dbInfo[id];
+  const getValue = id => info ? info[id] : null;
 
   return (
-    <Modal title={peopleTabInfo.btn} {...restProps}>
+    <Modal title={modalTitle} {...restProps}>
       {peopleTabInfo.headings.map(({ name, id }) => (
         <Form.Group>
           <Form.Label>{name}</Form.Label>
-          <Form.Control type={name == "Email" ? "Email" : ""} value={getValue(id)} onChange={event => update(id, event.target.value)} />
+          <Form.Control type={name == "Email" ? "Email" : ""} defaultValue={getValue(id)} onChange={event => update(id, event.target.value)} />
         </Form.Group>
       ))}
 
-      <StyledButton className="py-2" type="submit" onClick={() => { restProps.onSubmit(peopleTabInfo.title, form); restProps.onHide(); }}>
+      <StyledButton className="py-2" type="submit" onClick={() => { restProps.onSubmit(peopleTabInfo.object, form); restProps.onHide(); }}>
         Submit
       </StyledButton>
     </Modal>
