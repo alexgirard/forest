@@ -30,7 +30,7 @@ const AddModal = ({ peopleTabInfo, ...restProps }) => {
         </Form.Group>
       ))}
 
-      <StyledButton className="py-2" type="submit" onClick={() => { restProps.onSubmit(peopleTabInfo.title, form); restProps.onHide(); }}>
+      <StyledButton className="py-2" type="submit" onClick={() => { restProps.onSubmit(peopleTabInfo.object, form); restProps.onHide(); }}>
         Submit
       </StyledButton>
     </Modal>

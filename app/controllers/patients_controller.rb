@@ -3,8 +3,12 @@ class PatientsController < ApplicationController
 
   def create  
     # TODO: Error check for staff that already exists
-    patient = Patient.create(params.require(:room).permit(:hospital_id, :active))
-    redirect_to dashboard_path
+    patient = Patient.new 
+    patient.hospital_id = params[:patient][:patient_id]
+    patient.active = true
+    patient.save!
+    # patient = Patient.create(params.require(:patient).permit(:hospital_id, :active))
+    #redirect_to dashboard_path
   end
 
   def show 
@@ -21,6 +25,5 @@ class PatientsController < ApplicationController
   def destroy 
     patient = Patient.find(params[:id])
     patient.destroy
-    redirect_to dashboard_path
   end
 end
