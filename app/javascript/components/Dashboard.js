@@ -5,8 +5,7 @@ import SideBar from './SideBar';
 import People from './People';
 import Outbreaks from './Outbreaks';
 
-const Dot = styled.span`color: rgba(14, 103, 23, 0.5);`;
-const Logo = () => <h1>forest<Dot>.</Dot></h1>
+const Logo = require('../../assets/images/logo.png');
 
 const TopBarContainer = styled.div`
   border-bottom: 1px solid rgba(199, 199, 199, 0.5);
@@ -14,7 +13,7 @@ const TopBarContainer = styled.div`
 
 const TopBar = () => (
   <TopBarContainer className="py-2 px-3 d-flex justify-content-between align-items-center">
-    <Logo />
+    <img src={Logo} />
     <h3>User</h3>
   </TopBarContainer>
 );
