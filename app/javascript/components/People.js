@@ -146,7 +146,7 @@ const PatientInfo = ({ patients, ...props }) => {
 }
 
 const RoomInfo = ({ rooms, ...props }) => {
-  // const [editInfo, setEditInfo] = useState(false);
+  const [editInfo, setEditInfo] = useState(false);
   const handleRoomDelete = id => {
     var token = document.getElementsByName('csrf-token')[0].content
     fetch(`http://localhost:3000/rooms/${id}`, 
@@ -169,7 +169,7 @@ const RoomInfo = ({ rooms, ...props }) => {
             <td><button onClick={() => setEditInfo(r)}>Edit</button><button onClick={() => handleRoomDelete(r.id)}>Delete</button></td>
           </tr>
       ))}
-      {/* <EditModal modalTitle="Edit Room" show={!!editInfo} onHide={() => setEditInfo(null)} info={editInfo} {...props} /> */}
+      <EditModal modalTitle="Edit Room" show={!!editInfo} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
     </tbody>
   )
 }
