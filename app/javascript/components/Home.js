@@ -1,10 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Fancy = styled.h1`
-  background-color: #d74234;
-`;
-
 const Login = ({ changePage }) => <p>Login</p>;
 const Signup = ({ changePage }) => <p>Signup</p>;
 const Edit = ({ changePage }) => <p>Edit</p>;
@@ -14,8 +10,9 @@ class Home extends React.Component {
     super(props);
     this.state = { page: 'login' };
   };
+  
   render() {
-    /* const { page } = this.state;
+    const { page } = this.state;
 
     switch(page) {
       case 'login':
@@ -26,10 +23,7 @@ class Home extends React.Component {
         return <Edit changePage={this.changePage}/>
       default:
         return <p>defualt</p>
-    }*/
-    return (
-      <Fancy>Hellooo</Fancy>
-    );
+    }
   }
 };
 

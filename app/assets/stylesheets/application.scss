@@ -13,3 +13,27 @@
  *= require_tree .
  *= require_self
  */
+
+@import "bootstrap";
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+body > div {
+  height: 100vh;
+}
+
+h1, h3, p {
+  font-weight: 400;
+  margin: 0;
+}
+
+h4 {
+  font-weight: 600;
+  margin: 0;
+}
+
+.notice, .alert {
+  display: none;
+}
