@@ -14,7 +14,7 @@ const patients = { object: "patient", title: "Patients", btn: "Add Patient", hea
   { name: "Room Admittance", id: "start_time" },
   { name: "Room Discharge", id: "end_time" },
 ]};
-const staff = { title: "Staff", btn: "Add Staff", headings: [
+const staff = { object: "staff", title: "Staff", btn: "Add Staff", headings: [
   { name: "Badge #", id: "badge" },
   { name: "First Name", id: "first_name" },
   { name: "Last Name", id: "last_name" },
@@ -201,6 +201,17 @@ const People = ({ staff, patients, rooms, infections }) => {
         break;
       case 'patient':
         fetch('http://localhost:3000/patients', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': token
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify(submitObject),
+        })
+        break;
+      case 'staff':
+        fetch('http://localhost:3000/staffs', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
