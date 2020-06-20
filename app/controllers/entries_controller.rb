@@ -1,4 +1,9 @@
 class EntriesController < ApplicationController 
+
+  def index 
+    render component: 'Entry'
+  end
+
   def create 
     entry = Entry.new 
     entry.time = Time.now

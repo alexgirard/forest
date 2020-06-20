@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resources :rooms
   resources :patients
   resources :infections
-  resources :entries, only: [:create]
+  resources :entries, only: [:index, :create]
   
   devise_for :users, controllers: { registrations: 'registrations', sessions: 'sessions' }
 end
