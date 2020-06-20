@@ -1,13 +1,34 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Table } from 'react-bootstrap';
+import { Table, FormData } from 'react-bootstrap';
 
 import AddModal from './AddModal';
 
-const rooms = { title: "rooms", btn: "add room", headings: ["room id", "identifer", "patient_id"] };
-const patients = { title: "patients", btn: "add patient", headings: ["patient id", "room", "room admittance", "room discharge"] };
-const staff = { title: "staff", btn: "add staff", headings: ["badge", "first name", "last name", "email", "phone"] };
-const infections = { title: "infections", btn: "add infection", headings: ["patient", "notes", "start", "end", "incubation"] };
+const rooms = { title: "Rooms", btn: "Add Room", headings: [
+  { name: "Room Id", id: "room_id" },
+  { name: "Identifer", id: "identifier" },
+  { name: "Patient Id", id: "patient_id" },
+]};
+const patients = { title: "Patients", btn: "Add Patient", headings: [
+  { name: "Patient Id", id: "patient_id" },
+  { name: "Room Id", id: "identifier" },
+  { name: "Room Admittance", id: "start_time" },
+  { name: "Room Discharge", id: "end_time" },
+]};
+const staff = { title: "Staff", btn: "Add Staff", headings: [
+  { name: "Badge #", id: "badge" },
+  { name: "First Name", id: "first_name" },
+  { name: "Last Name", id: "last_name" },
+  { name: "Email", id: "email" },
+  { name: "Phone", id: "phone" },
+]};
+const infections = { title: "Infections", headings: [
+  { name: "Patient", id: "patient_id" },
+  { name: "Notes", id: "notes" },
+  { name: "Start", id: "start" },
+  { name: "End", id: "end" },
+  { name: "Incubation", id: "incubation" },
+]};
 const peopleTabs = [rooms, patients, staff, infections];
 
 const TabUnderline = styled.div`
@@ -39,10 +60,12 @@ const PeopleTabs = ({ tabs, peopleTabInfo, switchPeopleTab, setModalShow }) => (
         </TabUnderline>
       ))}
     </div>
-    <AddButton onClick={() => setModalShow(true)}>
-      <i className="fa fa-plus mr-2" />
-      {peopleTabInfo.btn}
-    </AddButton>
+    {!!peopleTabInfo.btn && (
+      <AddButton onClick={() => setModalShow(true)}>
+        <i className="fa fa-plus mr-2" />
+        {peopleTabInfo.btn}
+      </AddButton>
+    )}
   </div>
 );
 
@@ -98,7 +121,6 @@ const InfectionInfo = ({ infections }) => (
         <tr key={i.id}>
           <td>{`${i.patient.hospital_id}`}</td>
           <td>{`${i.notes}`}</td>
-          <td>{`${i.notes}`}</td>
           <td>{`${i.start}`}</td>
           <td>{`${i.end}`}</td>
           <td>{`${i.incubation}`}</td>
@@ -112,10 +134,11 @@ const People = ({ staff, patients, rooms, infections }) => {
   const [modalShow, setModalShow] = useState(false);
   const peopleTabInfo = peopleTabs.find(tab => tab.title == peopleTab);
 
-  const submitForm = () => {
-    console.log('submit');
+  const submitForm = (title, form) => {
+    const submitObject = { [title.toLowerCase()] : { ...form }};
+    console.log(submitObject);
+    event.preventDefault();
   }
-  console.log(infections);
 
   return (
     <div className="p-5 m-2">
@@ -128,7 +151,7 @@ const People = ({ staff, patients, rooms, infections }) => {
       <StyledTable striped bordered hover>
         <thead>
           <tr>
-            {peopleTabInfo.headings.map(heading => <th>{heading}</th>)}
+            {peopleTabInfo.headings.map(({ name }) => <th>{name}</th>)}
           </tr>
         </thead>
         {
@@ -136,7 +159,7 @@ const People = ({ staff, patients, rooms, infections }) => {
             'patients': <PatientInfo patients={patients}/>,
             'staff': <StaffInfo staff={staff}/>,
             'rooms': <RoomInfo rooms={rooms}/>,
-            'infection': <InfectionInfo infections={infections}/>
+            'infections': <InfectionInfo infections={infections}/>
           }[peopleTab]
         }
       </StyledTable>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
 
@@ -17,21 +17,24 @@ const StyledButton = styled.button`
   }
 `;
 
-const AddModal = ({ peopleTabInfo, ...restProps }) => (
-  <Modal title={peopleTabInfo.btn} {...restProps}>
-    <Form>
-      {peopleTabInfo.headings.map(heading => (
-        <Form.Group controlId={`form${heading}`}>
-          <Form.Label>{heading}</Form.Label>
-          <Form.Control type={heading == "email" ? "email" : ""} />
+const AddModal = ({ peopleTabInfo, ...restProps }) => {
+  const [form, updateForm] = useState({});
+  const update = (key, value) => updateForm({ ...form, [key]: value });
+
+  return (
+    <Modal title={peopleTabInfo.btn} {...restProps}>
+      {peopleTabInfo.headings.map(({ name, id }) => (
+        <Form.Group>
+          <Form.Label>{name}</Form.Label>
+          <Form.Control type={name == "Email" ? "Email" : ""} onChange={event => update(id, event.target.value)} />
         </Form.Group>
       ))}
 
-      <StyledButton className="py-2" type="submit" onClick={restProps.onSubmit}>
+      <StyledButton className="py-2" type="submit" onClick={() => { restProps.onSubmit(peopleTabInfo.title, form); restProps.onHide(); }}>
         Submit
       </StyledButton>
-    </Form>
-  </Modal>
-);
+    </Modal>
+  );
+};
 
 export default AddModal;
