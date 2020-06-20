@@ -14,7 +14,7 @@ class RoomsController < ApplicationController
 
   def update 
     room = Room.find(params[:id])
-    room.update_attributes(params.permit(:identifier))
+    room.update_attributes(params.require(:room).permit(:identifier))
     redirect_to dashboard_path
   end
 

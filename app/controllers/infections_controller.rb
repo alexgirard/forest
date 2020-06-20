@@ -17,7 +17,7 @@ class InfectionsController < ApplicationController
 
   def update 
     infection = Infection.find(params[:id])
-    infection.update_attributes(params.permit(:notes, :start, :end, :incubation, :steps))
+    infection.update_attributes(params.require(:infection).permit(:notes, :start, :end, :incubation, :steps, :hai, :status))
     redirect_to dashboard_path
   end
 

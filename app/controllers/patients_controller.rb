@@ -12,7 +12,6 @@ class PatientsController < ApplicationController
     location.patient_id = patient.id
     location.start_time = params[:patient][:start_time]
     location.end_time = params[:patient][:end_time]
-    byebug
     location.save!
   end
 
@@ -23,12 +22,37 @@ class PatientsController < ApplicationController
 
   def update 
     patient = Patient.find(params[:id])
-    patient.update_attributes(params.permit(:hospital_id, :active))
-    redirect_to dashboard_path
+    location = PatientLocation.find_by(patient_id: params[:id], end_time: nil)
+    if params[:patient][:current_room].present?
+      if location.present?
+        location.end_time = Time.now
+        location.save!
+      end
+      byebug
+      location = PatientLocation.new 
+      location.room_id = params[:patient][:current_room]
+      location.patient_id = patient.id 
+      location.start_time = Time.now
+      location.save!
+    elsif params[:patient][:entry_time].present?
+      location.start_time = params[:patient][:entry_time]
+    elsif params[:patient][:exit_time].present?
+      byebug
+      location.end_time = params[:patient][:exit_time]
+      byebug
+    end
+    location.save!
+    patient.save!
+    # patient.update_attributes(params.permit(:hospital_id, :active))
   end
 
   def destroy 
     patient = Patient.find(params[:id])
+    location = PatientLocation.find_by(patient_id: params[:id], end_time: nil)
+    if location.present?
+      location.end_time = Time.now
+      location.save!
+    end
     patient.destroy
   end
 end
