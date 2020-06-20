@@ -119,7 +119,7 @@ const InfectionInfo = ({ infections }) => (
   <tbody>
     {infections.map(i => (
         <tr key={i.id}>
-          <td>{`${i.patient.hospital_id}`}</td>
+          <td>Patient ID</td>
           <td>{`${i.notes}`}</td>
           <td>{`${i.start}`}</td>
           <td>{`${i.end}`}</td>
