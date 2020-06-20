@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Table, FormData } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 import AddModal from './AddModal';
 
@@ -24,6 +24,8 @@ const staff = { object: "staff", title: "Staff", btn: "Add Staff", headings: [
 const infections = { title: "Infections", headings: [
   { name: "Patient", id: "patient_id" },
   { name: "Notes", id: "notes" },
+  { name: "Status", id: "status" },
+  { name: "Hai", id: "hai" },
   { name: "Start", id: "start" },
   { name: "End", id: "end" },
   { name: "Incubation", id: "incubation" },
@@ -169,6 +171,8 @@ const InfectionInfo = ({ infections }) => (
         <tr key={i.id}>
           <td>Patient ID</td>
           <td>{`${i.notes}`}</td>
+          <td>{`${i.status}`}</td>
+          <td>{`${i.hai}`}</td>
           <td>{`${i.start}`}</td>
           <td>{`${i.end}`}</td>
           <td>{`${i.incubation}`}</td>

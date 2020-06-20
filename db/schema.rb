@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_19_171229) do
+ActiveRecord::Schema.define(version: 2020_06_20_183043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 2020_06_19_171229) do
     t.datetime "end"
     t.integer "incubation"
     t.integer "steps"
+    t.string "hai"
+    t.string "status"
     t.index ["patient_id"], name: "index_infections_on_patient_id"
   end
 
