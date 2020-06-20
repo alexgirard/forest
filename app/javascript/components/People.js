@@ -10,8 +10,8 @@ const rooms = { object: "room", title: "Rooms", btn: "Add Room", headings: [
   { name: "Patient Id", id: "patient_id" },
 ]};
 const patients = { object: "patient", title: "Patients", btn: "Add Patient", headings: [
-  { name: "Patient Id", id: "patient_id" },
-  { name: "Room Id", id: "identifier" },
+  { name: "Hospital Id", id: "hospital_id" },
+  { name: "Room Id", id: "room_id" },
   { name: "Room Admittance", id: "start_time" },
   { name: "Room Discharge", id: "end_time" },
 ]};
@@ -134,9 +134,9 @@ const PatientInfo = ({ patients, ...props }) => {
       {patients.map(p => (
           <tr key={p.id}>
             <td>{`${p.hospital_id}`}</td>
-            <td>Room</td>
-            <td>Start time</td>
-            <td>End time</td>
+            <td>{`${p.current_room}`}</td>
+            <td>{`${p.entry_time}`}</td>
+            <td>{`${p.exit_time}`}</td>
             <td><button onClick={() => setEditInfo(p)}>Edit</button><button onClick={() => handlePatientDelete(p.id)}>Delete</button></td>
           </tr>
       ))}
@@ -165,7 +165,7 @@ const RoomInfo = ({ rooms, ...props }) => {
       {rooms.map(r => (
           <tr key={r.id}>
             <td>{`${r.identifier}`}</td>
-            <td>Patient Hospital ID</td>
+            <td>{`${r.current_patient}`}</td>
             <td><button onClick={() => setEditInfo(r)}>Edit</button><button onClick={() => handleRoomDelete(r.id)}>Delete</button></td>
           </tr>
       ))}
@@ -178,7 +178,7 @@ const InfectionInfo = ({ infections, ...props }) => (
   <tbody>
     {infections.map(i => (
         <tr key={i.id}>
-          <td>Patient ID</td>
+          <td>{`${i.patient_hospital_id}`}</td>
           <td>{`${i.notes}`}</td>
           <td>{`${i.status}`}</td>
           <td>{`${i.hai}`}</td>

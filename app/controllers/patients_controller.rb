@@ -4,11 +4,16 @@ class PatientsController < ApplicationController
   def create  
     # TODO: Error check for staff that already exists
     patient = Patient.new 
-    patient.hospital_id = params[:patient][:patient_id]
+    patient.hospital_id = params[:patient][:hospital_id]
     patient.active = true
     patient.save!
-    # patient = Patient.create(params.require(:patient).permit(:hospital_id, :active))
-    #redirect_to dashboard_path
+    location = PatientLocation.new 
+    location.room_id = params[:patient][:room_id]
+    location.patient_id = patient.id
+    location.start_time = params[:patient][:start_time]
+    location.end_time = params[:patient][:end_time]
+    byebug
+    location.save!
   end
 
   def show 
