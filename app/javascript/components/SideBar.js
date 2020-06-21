@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const SideItemContainer = styled.div`
   background-color: ${props => props.active ? "rgba(14, 103, 23, 0.2)" : "none"};
-  color: ${props => props.active ? " rgba(14, 103, 23, 0.48)" : "rgba(0, 0, 0, 0.3)"};
+  color: ${props => props.active ? " rgba(14, 103, 23, 0.6)" : "rgba(0, 0, 0, 0.5)"};
 `;
 
 const FaContainer = styled.div`width: 30px;`
@@ -18,7 +18,8 @@ const SideItem = ({ icon, name, active, switchTab }) => (
 const SideBarContainer = styled.div`
   background-color: rgba(14, 103, 23, 0.1);
   border-right: 1px solid rgba(199, 199, 199, 0.5);
-  color: rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
 
   :hover {
     cursor: pointer;
@@ -45,7 +46,7 @@ const SideBar = ({ tabs, curTab, switchTab }) => (
         <SideItem {...tab} active={curTab === tab.name} switchTab={switchTab} />
       ))}
     </div>
-    <div className="d-flex justify-content-center p-3" onClick={handleLogout}>logout</div>
+    <div className="d-flex justify-content-center p-4" onClick={handleLogout}>logout</div>
   </SideBarContainer>
 );
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
 
-import Modal from './Modal';
+import ModalTemplate from './ModalTemplate';
 
 const StyledButton = styled.button`
   unset: all;
@@ -24,8 +24,8 @@ const EditModal = ({ info, modalTitle, peopleTabInfo, ...restProps }) => {
   const getValue = id => info ? info[id] : null;
 
   return (
-    <Modal title={modalTitle} {...restProps}>
-      {peopleTabInfo.headings.map(({ name, id }) => (
+    <ModalTemplate title={modalTitle} {...restProps}>
+      {peopleTabInfo.headings.map(({ name, id, hideEdit }) => hideEdit ? null : (
         <Form.Group>
           <Form.Label>{name}</Form.Label>
           <Form.Control type={name == "Email" ? "Email" : ""} defaultValue={getValue(id)} onChange={event => update(id, event.target.value)} />
@@ -35,7 +35,7 @@ const EditModal = ({ info, modalTitle, peopleTabInfo, ...restProps }) => {
       <StyledButton className="py-2" type="submit" onClick={() => { restProps.onEditSubmit(info.id, peopleTabInfo.object, form); restProps.onHide(); }}>
         Submit
       </StyledButton>
-    </Modal>
+    </ModalTemplate>
   );
 };
 
