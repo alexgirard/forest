@@ -28,7 +28,6 @@ const infections = { object: "infection", title: "Infections", headings: [
   { name: "Status", id: "status" },
   { name: "Hai", id: "hai" },
   { name: "Start", id: "start" },
-  { name: "End", id: "end" },
   { name: "Incubation", id: "incubation" },
 ]};
 const peopleTabs = [rooms, patients, staff, infections];
@@ -254,7 +253,6 @@ const InfectionInfo = ({ infections, ...props }) => {
           <td>{`${i.status}`}</td>
           <td>{`${i.hai}`}</td>
           <td>{`${i.start}`}</td>
-          <td>{`${i.end}`}</td>
           <td>{`${i.incubation}`}</td>            
           <td><button onClick={() => setEditInfo(i)}>Edit</button><button onClick={() => handleInfectionDelete(i.id)}>Delete</button></td>
         </tr>
