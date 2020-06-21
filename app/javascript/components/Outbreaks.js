@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import _ from 'lodash';
 import { Card, Form, FormControl, Container, ProgressBar, Button, Table } from 'react-bootstrap';
 
+const steps = ["type", "patient", "status", "hai", "notify", "send", "thanks"];
 
 const Grid = styled.div`
   display: grid;
@@ -13,7 +14,8 @@ const Grid = styled.div`
 `;
 
 const Radio = styled(Card)`
-  color: rgba(0,0,0,0.4);
+  color: ${props => props.selected ? "rgba(14, 103, 23, 0.5)" : "rgba(0,0,0,0.4)"};
+  background-color: ${props => props.selected ? "rgba(14, 103, 23, 0.2)" : "none"};
   cursor: pointer;
 
   :hover {
@@ -23,7 +25,7 @@ const Radio = styled(Card)`
 `;
 
 const Progress = styled(ProgressBar)`
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 
   .progress-bar {
     background-color: rgba(14, 103, 23, 0.5);
@@ -52,13 +54,16 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const RadioBtn = ({ value, updateField, nextStep, children }) => (
-  <Radio onClick={() => { updateField(value); nextStep(); }}>
+const RadioBtn = ({ value, updateField, nextStep, children, info, curStep }) => {
+  console.log(info, curStep, steps[curStep], _.get(info, steps[curStep]));
+  return (
+  <Radio selected={_.get(info, steps[curStep]) == value} onClick={() => { updateField(value); nextStep(); }}>
     {children}
   </Radio>
 );
+  };
 
-const StepTemplate = ({ desc, btns, ...props }) => (
+const StepTemplate = ({ desc, btns, back, ...props }) => (
   <>
     <h5 className="mb-4">{desc}</h5>
     <Grid cols={btns.length} className="m-auto">
@@ -71,6 +76,7 @@ const StepTemplate = ({ desc, btns, ...props }) => (
         </RadioBtn>
       ))}
     </Grid>
+    <StyledButton className="my-5 d-block" onClick={() => back()}> ← Back</StyledButton>
   </>
 );
 
@@ -103,8 +109,11 @@ const PatientStep = ({ nextStep, updateField }) => (
     <h5 className="mb-4">What is the patient's hospital id?</h5>
     <Container>
       <Form.Control type="text" placeholder="patient id" onChange={event => updateField(event.target.value)} />
-      <StyledButton className="my-4 w-auto" onClick={() => nextStep()}>Next step</StyledButton>
     </Container>
+    <div className="d-flex mt-5 justify-content-between">
+      <StyledButton className="my-4 d-block" onClick={() => back()}> ← Back</StyledButton>
+      <StyledButton className="my-4 w-auto" onClick={() => nextStep()}>Next →</StyledButton>
+    </div>
   </>
 );
 
@@ -124,7 +133,7 @@ const NotifyStep = ({ submitInfection, nextStep, updateField, staffInfections}) 
       <h5 className="mb-4">Please enter the desired incubation period (in days).</h5>
       <Container>
         <Form.Control type="text" placeholder="Incubation period" onChange={event => updatePeriod(event.target.value)} />
-        <StyledButton className="my-4 w-auto" onClick={() => handleNextClick()}>Next</StyledButton>
+        <StyledButton className="my-4 w-auto" onClick={() => handleNextClick()}>Contact Trace</StyledButton>
       </Container>
       {showResults && (
         <>
@@ -218,17 +227,17 @@ const TypeStep = ({ nextStep, updateField, infections }) => {
         <div className="d-flex">
           {buttons.filter((child) => !infection || child.props.children.toLowerCase().startsWith(infection.toLowerCase()))}
         </div>
-        <div className="my-0 mx-auto"><StyledButton className="my-4 w-auto" onClick={() => { updateField(infection); nextStep(); }}>Next step</StyledButton></div>
       </Container>
+      <div className="d-flex mt-5 justify-content-between">
+        <StyledButton className="my-4 d-block" onClick={() => back()}> ← Back</StyledButton>
+        <StyledButton className="my-4 w-auto" onClick={() => { updateField(infection); nextStep(); }}>Next →</StyledButton>
+      </div>
     </>
   );
 };
 
-
-const steps = ["type", "patient", "status", "hai", "notify", "send", "thanks"];
-
-const StepContent = ({ curStep, ...props }) => {
-  switch(curStep) {
+const StepContent = props => {
+  switch(props.curStep) {
     case 0:
       return <TypeStep {...props} />
     case 1:
@@ -286,11 +295,21 @@ const Outbreaks = ({ infections }) => {
   }
 
   return (
-    <div className="p-5 mt-5 d-flex flex-column justfiy-content-center text-center">
-      <Progress now={((curStep+1)/steps.length) * 100} />
-      <StepContent curStep={curStep} nextStep={nextStep} updateField={updateField} submitInfection={submitInfection} staffInfections={staffInfections} infections={infections} />
-      {curStep != 0 && curStep != 3 && curStep != 4 && <StyledButton className="my-4 d-block" onClick={() => back()}> ← Back</StyledButton>}
-    </div>
+    <Container>
+      <div className="p-5 mt-5 d-flex flex-column justfiy-content-center text-center">
+        <Progress now={((curStep+1)/steps.length) * 100} />
+        <StepContent
+          curStep={curStep}
+          nextStep={nextStep}
+          updateField={updateField}
+          submitInfection={submitInfection}
+          staffInfections={staffInfections}
+          infections={infections}
+          back={back}
+          info={info}
+        />
+      </div>
+    </Container>
   );
 };
 

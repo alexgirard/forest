@@ -142,12 +142,12 @@ const Overview = ({ staff, patients, rooms, infections }) => {
   const suspectedInfected = (_.sumBy(bargraphData, i => i.Suspected) / _.size(infectionInfo) * 100).toFixed(0);
 
   return (
-    <div className="p-5">
+    <div className="py-4 px-5">
       <Grid className="mb-2" cols="1" gap="0.5">
         {_.map(hai, i => i.percent > cutoffHai  ? <HaiAlert {...i} cutoffHai={cutoffHai} /> : null)}
       </Grid>
       <div className="d-flex">
-        <Card title="Suspsected vs. Confirmed Cases" className="mr-5">
+        <Card title="Suspsected vs. Confirmed Cases" className="mr-4">
           <BarChart
             width={800}
             height={350}
@@ -182,7 +182,7 @@ const Overview = ({ staff, patients, rooms, infections }) => {
           </PieChart>
         </Card>
       </div>
-      <Grid className="mt-5" cols="3" gap="3rem">
+      <Grid className="mt-4" cols="3" gap="1.5rem">
         <SmallCard title="Hospital Aquired Infection Cases (HAI)">{totalHai}</SmallCard>
         <SmallCard title="Confirmed Infectous Patients Percentage">{confirmedInfected}%</SmallCard>
         <SmallCard title="Suspected Infectous Patients Percentage">{suspectedInfected}%</SmallCard>

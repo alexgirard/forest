@@ -4,25 +4,35 @@ import { Table } from 'react-bootstrap';
 
 import AddModal from './AddModal';
 import EditModal from './EditModal';
+import EntriesModal from './EntriesModal';
 
-const rooms = { object: "room", title: "Rooms", btn: "Add Room", headings: [
-  { name: "Identifer", id: "identifier" },
-  { name: "Patient Id", id: "patient_id", hideEdit: true },
-]};
-const patients = { object: "patient", title: "Patients", btn: "Add Patient", headings: [
-  { name: "Hospital Id", id: "hospital_id" },
-  { name: "Room Identifier", id: "current_room" },
-  { name: "Room Admittance", id: "entry_time" },
-  { name: "Room Discharge", id: "exit_time", hide: true },
-]};
-const staff = { object: "staff", title: "Staff", btn: "Add Staff", headings: [
-  { name: "Badge #", id: "badge" },
-  { name: "First Name", id: "first_name" },
-  { name: "Last Name", id: "last_name" },
-  { name: "Exposure", id: "exposure"},
-  { name: "Email", id: "email" },
-  { name: "Phone", id: "phone" },
-]};
+const rooms = { object: "room", title: "Rooms", btn: "Add Room", 
+  entries: [{ name: "Time", id: "time"}, { name: "Badge #", id: "staff_id"}], // FIXME: should be badge
+  headings: [
+    { name: "Identifer", id: "identifier" },
+    { name: "Patient Id", id: "patient_id", hideEdit: true },
+  ],
+};
+const patients = { object: "patient", title: "Patients", btn: "Add Patient",
+  entries: [{ name: "Time", id: "time"}, { name: "Badge #", id: "staff_id"}],
+  headings: [
+    { name: "Hospital Id", id: "hospital_id" },
+    { name: "Room Identifier", id: "current_room" },
+    { name: "Room Admittance", id: "entry_time" },
+    { name: "Room Discharge", id: "exit_time", hide: true },
+  ],
+};
+const staff = { object: "staff", title: "Staff", btn: "Add Staff",
+  entries: [{ name: "Time", id: "time"}, { name: "Room Id", id: "room_id"}],
+  headings: [
+    { name: "Badge #", id: "badge" },
+    { name: "First Name", id: "first_name" },
+    { name: "Last Name", id: "last_name" },
+    { name: "Exposure", id: "exposure", hideEdit: true },
+    { name: "Email", id: "email" },
+    { name: "Phone", id: "phone" },
+  ],
+};
 const infections = { object: "infection", title: "Infections", headings: [
   { name: "Patient", id: "patient_id" },
   { name: "Type", id: "notes" },
@@ -77,6 +87,16 @@ const StyledTable = styled(Table)`
     font-weight: 500;
   }
 
+  td {
+    vertical-align: center;
+  }
+
+  tr.entries {
+    :hover {
+      cursor: pointer;
+    }
+  }
+
   .edit {
     width: 1px;
     white-space: nowrap;
@@ -84,9 +104,9 @@ const StyledTable = styled(Table)`
 `;
 
 
-
-const StaffInfo = ({ staff, ...props }) => {
+const StaffInfo = ({ staff, entries, onSubmit, ...props }) => {
   const [editInfo, setEditInfo] = useState(null);
+  const [entryInfo, setEntryInfo] = useState(null);
 
   const handleStaffDelete = id => {
     var token = document.getElementsByName('csrf-token')[0].content
@@ -115,22 +135,26 @@ const StaffInfo = ({ staff, ...props }) => {
     })
   }
 
-  return(
+  // const staffEntries = entryInfo => !entryInfo ? [] : _.filter(entries, e => e.badge == entryInfo);
+
+  return (
     <tbody>
       {staff.map(s => (
-        <tr key={s.id}>
-          <td>{`${s.badge}`}</td>
+        <tr className="entries" key={s.id}>
+          <td onClick={() => setEntryInfo(s.badge)}>{`${s.badge}`}</td>
           <td>{`${s.first_name}`}</td>
           <td>{`${s.last_name}`}</td>
           <td>{`${s.exposure}`}</td>
           <td>{`${s.email}`}</td>
           <td>{`${s.phone}`}</td>
           <td className="edit">
-            <StyledButton onClick={() => setEditInfo(s)}>Edit</StyledButton><StyledButton onClick={() => handleStaffDelete(s.id)}>Delete</StyledButton>
+            <StyledButton onClick={() => setEditInfo(s)}>Edit</StyledButton>
+            <StyledButton onClick={() => handleStaffDelete(s.id)}>Delete</StyledButton>
           </td>
         </tr>
       ))}
-      <EditModal modalTitle="Edit Staff" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
+      <EditModal modalTitle="Edit Staff" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} onSubmit={onSubmit} {...props} />
+      <EntriesModal modalTitle={`Staff # ${entryInfo} Room Entries`} show={!!entryInfo} onHide={() => setEntryInfo(null)} entries={[]} {...props} />
     </tbody>
   )
 }
@@ -168,11 +192,13 @@ const PatientInfo = ({ patients, ...props }) => {
   return(
     <tbody>
       {patients.map(p => (
-        <tr key={p.id}>
+        <tr className="entries" key={p.id}>
           <td>{`${p.hospital_id}`}</td>
           <td>{`${p.current_room}`}</td>
           <td>{`${p.entry_time}`}</td>
-          <td className="edit"><StyledButton onClick={() => setEditInfo(p)}>Edit</StyledButton><StyledButton onClick={() => handlePatientDelete(p.id)}>Delete</StyledButton></td>
+          <td className="edit">
+            <StyledButton onClick={() => setEditInfo(p)}>Edit</StyledButton>
+            <StyledButton onClick={() => handlePatientDelete(p.id)}>Delete</StyledButton></td>
         </tr>
       ))}
       <EditModal modalTitle="Edit Patient" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
@@ -212,10 +238,12 @@ const RoomInfo = ({ rooms, ...props }) => {
   return (
     <tbody>
       {rooms.map(r => (
-        <tr key={r.id}>
+        <tr className="entries" key={r.id}>
           <td>{`${r.identifier}`}</td>
           <td>{`${r.current_patient}`}</td>
-          <td className="edit"><StyledButton onClick={() => setEditInfo(r)}>Edit</StyledButton><StyledButton onClick={() => handleRoomDelete(r.id)}>Delete</StyledButton></td>
+          <td className="edit">
+            <StyledButton onClick={() => setEditInfo(r)}>Edit</StyledButton>
+            <StyledButton onClick={() => handleRoomDelete(r.id)}>Delete</StyledButton></td>
         </tr>
       ))}
       <EditModal modalTitle="Edit Room" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
@@ -262,7 +290,9 @@ const InfectionInfo = ({ infections, ...props }) => {
           <td>{`${i.hai}`}</td>
           <td>{`${i.start}`}</td>
           <td>{`${i.incubation}`}</td>            
-          <td className="edit"><StyledButton onClick={() => setEditInfo(i)}>Edit</StyledButton><StyledButton onClick={() => handleInfectionDelete(i.id)}>Delete</StyledButton></td>
+          <td className="edit">
+            <StyledButton onClick={() => setEditInfo(i)}>Edit</StyledButton>
+            <StyledButton onClick={() => handleInfectionDelete(i.id)}>Delete</StyledButton></td>
         </tr>
       ))}
       <EditModal modalTitle="Edit Infection" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
@@ -270,7 +300,7 @@ const InfectionInfo = ({ infections, ...props }) => {
   )
 }
 
-const People = ({ staff, patients, rooms, infections }) => {
+const People = ({ staff, patients, rooms, infections, entries }) => {
   const [peopleTab, switchPeopleTab] = useState(peopleTabs[0].title);
   const [modalShow, setModalShow] = useState(false);
   const peopleTabInfo = peopleTabs.find(tab => tab.title == peopleTab);
@@ -336,9 +366,9 @@ const People = ({ staff, patients, rooms, infections }) => {
         {/* Change onSubmit below for edit */}
         {
           {
-            'Patients': <PatientInfo patients={patients} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} />,
-            'Staff': <StaffInfo staff={staff} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} />,
-            'Rooms': <RoomInfo rooms={rooms} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} />,
+            'Patients': <PatientInfo patients={patients} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} entries={entries} />,
+            'Staff': <StaffInfo staff={staff} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} entries={entries} />,
+            'Rooms': <RoomInfo rooms={rooms} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} entries={entries} />,
             'Infections': <InfectionInfo infections={infections} peopleTabInfo={peopleTabInfo} onSubmit={submitForm} />
           }[peopleTab]
         }
