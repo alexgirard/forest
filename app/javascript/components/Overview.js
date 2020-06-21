@@ -1,14 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { Card as BCard } from 'react-bootstrap';
+import { Card as BCard, Alert } from 'react-bootstrap';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Sector, Cell } from 'recharts';
 import _ from 'lodash';
-
-const pieData = [
-  { name: 'Confirmed Case Exposure', value: 400 },
-  { name: 'Potential Exposure', value: 300 },
-  { name: 'Clear', value: 300 },
-];
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -53,12 +47,15 @@ const Card = ({ title, children, className }) => (
   </BCard>
 );
 
-const Number = styled.h1`color: rgba(14, 103, 23, 0.5);`;
+const Number = styled.h1`
+  font-size: 4rem;
+  color: rgba(14, 103, 23, 0.5);
+`;
 
 const SmallCard = ({ title, children }) => (
   <BCard className="text-center p-4">
     <div className="d-flex justify-content-center align-items-center">
-      <h5 className="pr-3 m-0">{title}:</h5>
+      <h4 className="pr-3 m-0">{title}:</h4>
       <Number>{children}</Number>
     </div>
   </BCard>
@@ -79,25 +76,82 @@ const StyledButton = styled.button`
   }
 `;
 
-// const test = { "covid": [{ patient_id: 10, notes: "covid",  status: "Confirmed" }, { patient_id: 10, notes: "covid",  status: "Confirmed" }]};
+const test = [
+  { patient_id: 10, notes: "covid",       status: "Confirmed", hai: "No" },
+  { patient_id: 10, notes: "covid",       status: "Confirmed", hai: "Yes" },
+  { patient_id: 10, notes: "covid",       status: "Suspected", hai: "Unknown" },
+  { patient_id: 10, notes: "chickenpox",  status: "Confirmed", hai: "Yes" },
+  { patient_id: 10, notes: "chickenpox",  status: "Confirmed", hai: "Unknown" },
+  { patient_id: 10, notes: "chickenpox",  status: "Suspected", hai: "Yes" },
+  { patient_id: 10, notes: "ebola",       status: "Confirmed", hai: "No" },
+  { patient_id: 10, notes: "ebola",       status: "Suspected", hai: "No" },
+  { patient_id: 10, notes: "ebola",       status: "Suspected", hai: "No" },
+  { patient_id: 10, notes: "ebola",       status: "Suspected", hai: "No" },
+  { patient_id: 10, notes: "ebola",       status: "Suspected", hai: "No" },
+  { patient_id: 10, notes: "ebola",       status: "Suspected", hai: "Yes" },
+];
+
+const test2 = [
+  { badge: 10, exposure: "Confirmed" },
+  { badge: 10, exposure: "Suspected" },
+  { badge: 10, exposure: "None" },
+  { badge: 10, exposure: "Suspected" },
+  { badge: 10, exposure: "Suspected" },
+];
+
+const HaiAlert = ({ name, percent, cutoffHai }) => (
+  <Alert variant="danger" className="text-center">
+    Over {cutoffHai}% of all {name} cases have have been confirmed or potentially acquired in hospital (currently at {percent.toFixed(0)}% HAI cases). Consider unit having an outbreak.
+  </Alert>
+);
+
+const getBarGraphData = infectionInfo => {
+  const cases = _.groupBy(infectionInfo, "notes");
+  const confirmed = _.mapValues(cases, info => _.size(_.filter(info, i => i.status == "Confirmed")));
+  const suspected = _.mapValues(cases, info => _.size(_.filter(info, i => i.status == "Suspected")));
+  return _.map(cases, (value, key) => ({ name: key, Confirmed: confirmed[key], Suspected: suspected[key] }));
+};
+
+const getHaiData = infectionInfo => {
+  const cases = _.groupBy(infectionInfo, "notes");
+  const haiData = _.mapValues(cases, info => _.size(_.filter(info, i => i.hai == "Yes" || i.hai == "Unknown")));
+  return _.map(cases, (value, key) => ({ name: key, percent: (haiData[key] /_.size(cases[key])*100), cases: _.size(cases[key]) }));
+};
+
+const getStaffData = staffInfo => {
+  const confirmed = _.size(_.filter(staffInfo, s => s.exposure == "Confirmed"));
+  const suspected = _.size(_.filter(staffInfo, s => s.exposure == "Suspected"));
+  return ([
+    { name: 'Confirmed Case Exposure', value: confirmed },
+    { name: 'Potential Case Exposure', value: suspected },
+    { name: 'Clear', value: (_.size(staffInfo) - confirmed - suspected) },
+  ]);
+};
 
 const Overview = ({ staff, patients, rooms, infections }) => {
-  // const confirmedCases = _.filter(infections, i => i.status === "Confirmed");
-  // const suspectedCases = _.filter(infections, i => i.status === "Suspected");
-  const cases = _.groupBy("notes");
-  // const casesData = _.flow(
-  //   _.groupBy("notes"),
+  // change to infections
+  const infectionInfo = test;
+  const bargraphData = getBarGraphData(infectionInfo);
+  const piegraphData = getStaffData(test2);
+  
+  const hai = getHaiData(infectionInfo);
+  const totalHai = _.sumBy(hai, i => i.cases);
+  const cutoffHai = 20;
 
-  // )(infections);
+  const confirmedInfected = (_.sumBy(bargraphData, i => i.Confirmed) / _.size(infectionInfo) * 100).toFixed(0);
+  const suspectedInfected = (_.sumBy(bargraphData, i => i.Suspected) / _.size(infectionInfo) * 100).toFixed(0);
 
   return (
     <div className="p-5">
+      <Grid className="mb-2" cols="1" gap="0.5">
+        {_.map(hai, i => i.percent > cutoffHai  ? <HaiAlert {...i} cutoffHai={cutoffHai} /> : null)}
+      </Grid>
       <div className="d-flex">
-        <Card title="Suspsect vs. Confirmed Cases" className="mr-5">
+        <Card title="Suspsected vs. Confirmed Cases" className="mr-5">
           <BarChart
             width={800}
-            height={300}
-            data={data}
+            height={350}
+            data={bargraphData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -105,19 +159,19 @@ const Overview = ({ staff, patients, rooms, infections }) => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="Suspect" stackId="a" fill="#8884d8" />
+            <Bar dataKey="Suspected" stackId="a" fill="#8884d8" />
             <Bar dataKey="Confirmed" stackId="a" fill="#82ca9d" />
           </BarChart>
         </Card>
         <Card title="Staff Exposures">
-          <PieChart width={400} height={300}>
+          <PieChart width={400} height={350}>
             <Pie
-              data={pieData}
+              data={piegraphData}
               cx={200}
-              cy={110}
+              cy={130}
               labelLine={false}
               label={renderCustomizedLabel}
-              outerRadius={80}
+              outerRadius={130}
               fill="#8884d8"
               dataKey="value"
             >
@@ -128,11 +182,10 @@ const Overview = ({ staff, patients, rooms, infections }) => {
           </PieChart>
         </Card>
       </div>
-      <Grid className="mt-5" cols="4" gap="3rem">
-        <SmallCard title="Hospital Aquired Cases">30</SmallCard>
-        <SmallCard title="Confirmed Cases">12</SmallCard>
-        <SmallCard title="Ventilated Cases">45</SmallCard>
-        <SmallCard title="Critical Cases">18</SmallCard>
+      <Grid className="mt-5" cols="3" gap="3rem">
+        <SmallCard title="Hospital Aquired Infection Cases (HAI)">{totalHai}</SmallCard>
+        <SmallCard title="Confirmed Infectous Patients Percentage">{confirmedInfected}%</SmallCard>
+        <SmallCard title="Suspected Infectous Patients Percentage">{suspectedInfected}%</SmallCard>
       </Grid>
     </div>
   );

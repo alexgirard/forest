@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Card, Form, Container, ProgressBar, Table } from 'react-bootstrap';
+import _ from 'lodash';
+import { Card, Form, FormControl, Container, ProgressBar, Button, Table } from 'react-bootstrap';
+
 
 const Grid = styled.div`
   display: grid;
@@ -75,7 +77,7 @@ const StepTemplate = ({ desc, btns, ...props }) => (
 
 const StatusStep = props => (
   <StepTemplate
-    desc="Is infection confirmed or suspected?"
+    desc="Please select if the case is confirmed or suspected."
     btns={[
       { icon: "fa-check", name: "Confirmed" },
       { icon: "fa-search", name: "Suspected" },
@@ -158,6 +160,21 @@ const NotifyStep = ({ submitInfection, nextStep, updateField, staffInfections}) 
   );
 };
 
+const EmailStep = ({ nextStep }) => (
+  <>
+    <h5 className="mb-4">Here is a template to notify the staff of a potential exposure. Edit the text below then click send.</h5>
+    <Container>
+      <Form.Control
+        as="textarea"
+        rows="6"
+        defaultValue="Hi there,&#013;&#013;Please note that your name has been flagged for potential exposure to a patient with a condition that requires follow up.  Please call Occupational Health at x55555 at your earliest available opportunity.&#013;&#013;Thank you."
+      />
+      <StyledButton className="my-3 w-auto" onClick={() => nextStep()}>Send Email</StyledButton>
+    </Container>
+  </>
+);
+
+
 const ThanksStep = ({ nextStep }) => (
   <>
     <h5 className="mb-4">Sent!</h5>
@@ -169,33 +186,75 @@ const ThanksStep = ({ nextStep }) => (
   </>
 );
 
+const Pill = styled(Button)`
+  margin-left: 1rem;
+  color: rgba(14,103,23,0.9);
+  border-color: rgba(14,103,23,0.9);
+  :hover {
+    color: rgba(14,103,23,0.9);
+    background-color: rgba(14,103,23,0.2);
+    border-color: rgba(14,103,23,0.9);
+  }
+`;
 
-const steps = ["status", "hai", "patient", "notify", "thanks"];
+const TypeStep = ({ nextStep, updateField, infections }) => {
+  const [infection, updateInfection] = useState(null);
+  
+  const currentInfections = _.filter(_.keys(_.groupBy(infections, "notes"), k => k != "null"));
+  const items = _.uniq([ "Covid-19", "Chickenpox", ...currentInfections ]);
+  const buttons = items.map(i => <Pill onClick={() => updateInfection(i)} variant="outline-primary">{i}</Pill>)
+  
+  return (
+    <>
+      <h5 className="mb-4">Please select/enter the name of the infection to begin.</h5>
+      <Container className="d-flex flex-column justify-content-center">
+        <Form.Control
+          autoFocus
+          className="mx-3 my-2 w-auto"
+          placeholder="Type to filter..."
+          onChange={(e) => { updateInfection(e.target.value) }}
+          value={infection}
+        />
+        <div className="d-flex">
+          {buttons.filter((child) => !infection || child.props.children.toLowerCase().startsWith(infection.toLowerCase()))}
+        </div>
+        <div className="my-0 mx-auto"><StyledButton className="my-4 w-auto" onClick={() => { updateField(infection); nextStep(); }}>Next step</StyledButton></div>
+      </Container>
+    </>
+  );
+};
+
+
+const steps = ["type", "patient", "status", "hai", "notify", "send", "thanks"];
 
 const StepContent = ({ curStep, ...props }) => {
   switch(curStep) {
     case 0:
-      return <StatusStep {...props} />
+      return <TypeStep {...props} />
     case 1:
-      return <HaiStep {...props} />
-    case 2:
       return <PatientStep {...props} />
+    case 2:
+      return <StatusStep {...props} />
     case 3:
+      return <HaiStep {...props} />
+    case 4:
       return <NotifyStep {...props} />
+    case 5:
+      return <EmailStep {...props} />
     default:
       return <ThanksStep {...props} />
   }
 }
 
-const Outbreaks = ({ }) => {
+const Outbreaks = ({ infections }) => {
   const [curStep, changeStep] = useState(0);
   const [info, updateInfo] = useState({});
   const [staffInfections, updateInfections] = useState({staff: {name: "steve"}});
   
   const nextStep = () => {
-    if (info.status != "Confirmed" & curStep == 2) {
-      changeStep(4);
-    } else if (curStep == steps.length) {
+    if (info.status != "Confirmed" & curStep == 4) {
+      changeStep(6);
+    } else if (curStep == steps.length - 1) {
       changeStep(0);
     } else {
       changeStep(curStep + 1);
@@ -229,7 +288,7 @@ const Outbreaks = ({ }) => {
   return (
     <div className="p-5 mt-5 d-flex flex-column justfiy-content-center text-center">
       <Progress now={((curStep+1)/steps.length) * 100} />
-      <StepContent curStep={curStep} nextStep={nextStep} updateField={updateField} submitInfection={submitInfection} staffInfections={staffInfections}/>
+      <StepContent curStep={curStep} nextStep={nextStep} updateField={updateField} submitInfection={submitInfection} staffInfections={staffInfections} infections={infections} />
       {curStep != 0 && curStep != 3 && curStep != 4 && <StyledButton className="my-4 d-block" onClick={() => back()}> ← Back</StyledButton>}
     </div>
   );

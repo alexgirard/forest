@@ -25,7 +25,7 @@ const EditModal = ({ info, modalTitle, peopleTabInfo, ...restProps }) => {
 
   return (
     <Modal title={modalTitle} {...restProps}>
-      {peopleTabInfo.headings.map(({ name, id }) => (
+      {peopleTabInfo.headings.map(({ name, id, hideEdit }) => hideEdit ? null : (
         <Form.Group>
           <Form.Label>{name}</Form.Label>
           <Form.Control type={name == "Email" ? "Email" : ""} defaultValue={getValue(id)} onChange={event => update(id, event.target.value)} />

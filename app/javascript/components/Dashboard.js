@@ -25,13 +25,13 @@ const Dashboard = ({staff, patients, rooms, infections, entries}) => {
   const tabs = [
     { icon: "fa-table",  name: "Dashboard", component: <Overview staff={staff} patients={patients} rooms={rooms} infections={infections} /> },
     { icon: "fa-user",   name: "People",    component: <People staff={staff} patients={patients} rooms={rooms} infections={infections}/> },
-    { icon: "fa-fire",   name: "Log Infection",  component: <Outbreaks /> },
+    { icon: "fa-fire",   name: "Log Infection",  component: <Outbreaks infections={infections} /> },
   ];
 
   const TabContent = ({ curTab }) => tabs.find(tab => tab.name === curTab).component || null;
 
   return ( 
-    <>
+    <div className="d-flex flex-column h-100">
       <TopBar />
       <div className="d-flex h-100">
         <SideBar tabs={tabs} curTab={curTab} switchTab={switchTab}  />
@@ -39,7 +39,7 @@ const Dashboard = ({staff, patients, rooms, infections, entries}) => {
           <TabContent curTab={curTab} />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

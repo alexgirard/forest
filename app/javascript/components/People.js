@@ -7,7 +7,7 @@ import EditModal from './EditModal';
 
 const rooms = { object: "room", title: "Rooms", btn: "Add Room", headings: [
   { name: "Identifer", id: "identifier" },
-  { name: "Patient Id", id: "patient_id" },
+  { name: "Patient Id", id: "patient_id", hideEdit: true },
 ]};
 const patients = { object: "patient", title: "Patients", btn: "Add Patient", headings: [
   { name: "Hospital Id", id: "hospital_id" },
@@ -172,7 +172,6 @@ const PatientInfo = ({ patients, ...props }) => {
           <td>{`${p.hospital_id}`}</td>
           <td>{`${p.current_room}`}</td>
           <td>{`${p.entry_time}`}</td>
-          <td>{`${p.exit_time}`}</td>
           <td className="edit"><StyledButton onClick={() => setEditInfo(p)}>Edit</StyledButton><StyledButton onClick={() => handlePatientDelete(p.id)}>Delete</StyledButton></td>
         </tr>
       ))}

@@ -45,7 +45,7 @@ const SideBar = ({ tabs, curTab, switchTab }) => (
         <SideItem {...tab} active={curTab === tab.name} switchTab={switchTab} />
       ))}
     </div>
-    <div className="d-flex justify-content-center p-3" onClick={handleLogout}>logout</div>
+    <div className="d-flex justify-content-center p-4" onClick={handleLogout}>logout</div>
   </SideBarContainer>
 );
 

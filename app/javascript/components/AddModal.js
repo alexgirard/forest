@@ -23,7 +23,7 @@ const AddModal = ({ peopleTabInfo, ...restProps }) => {
 
   return (
     <Modal title={peopleTabInfo.btn} {...restProps}>
-      {peopleTabInfo.headings.map(({ name, id }) => (
+      {peopleTabInfo.headings.map(({ name, id, hideEdit }) => hideEdit ? null :(
         <Form.Group>
           <Form.Label>{name}</Form.Label>
           <Form.Control type={name == "Email" ? "Email" : ""} onChange={event => update(id, event.target.value)} />
