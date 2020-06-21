@@ -19,7 +19,6 @@ class InfectionsController < ApplicationController
       entries = Entry.where(room_id: r.id, time: end_date..infection.start)
       entries.each do |e|
         s = e.staff
-        byebug
         if params[:infection][:status] == ('Confirmed')
           s.exposure = "Confirmed"
         elsif params[:infection][:status] == ('Suspected')

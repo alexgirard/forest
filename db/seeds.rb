@@ -5,3 +5,19 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+require 'faker'
+
+Patient.create(
+  [
+    {
+      hospital_id: 79234,
+    },
+    {
+      hospital_id: 16783,
+    },
+    {
+      hospital_id: 48303,
+    },
+  ]
+)

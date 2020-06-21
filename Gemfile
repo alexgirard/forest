@@ -50,3 +50,5 @@ gem "react-rails", "~> 2.6"
 gem 'devise'
 
 gem "bootstrap", "~> 4.5"
+
+gem 'faker'

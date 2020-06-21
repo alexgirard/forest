@@ -9,12 +9,10 @@ class PatientsController < ApplicationController
     patient.save!
     location = PatientLocation.new 
     room = Room.find_by(identifier: params[:patient][:current_room])
-    byebug
     location.room_id = room.id
     location.patient_id = patient.id
     location.start_time = params[:patient][:start_time]
     location.end_time = params[:patient][:end_time]
-    byebug
     location.save!
   end
 
@@ -31,18 +29,16 @@ class PatientsController < ApplicationController
         location.end_time = Time.now
         location.save!
       end
-      byebug
       location = PatientLocation.new 
-      location.room_id = params[:patient][:current_room]
+      room = Room.find_by(identifier: params[:patient][:current_room])
+      location.room_id = room.id
       location.patient_id = patient.id 
       location.start_time = Time.now
       location.save!
     elsif params[:patient][:entry_time].present?
       location.start_time = params[:patient][:entry_time]
     elsif params[:patient][:exit_time].present?
-      byebug
       location.end_time = params[:patient][:exit_time]
-      byebug
     end
     location.save!
     patient.save!

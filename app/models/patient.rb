@@ -10,7 +10,7 @@ class Patient < ApplicationRecord
 
   def current_room
     location = PatientLocation.find_by(patient_id: self.id, end_time: nil)
-    if location 
+    if location.present?
       location.room.id 
     else 
       "None"
@@ -23,7 +23,7 @@ class Patient < ApplicationRecord
 
   def entry_time
     location = PatientLocation.find_by(patient_id: self.id, end_time: nil)
-    if location
+    if location.present?
       if location.start_time.nil?
         "n/a"
       else 
@@ -36,7 +36,7 @@ class Patient < ApplicationRecord
 
   def exit_time
     location = PatientLocation.find_by(patient_id: self.id, end_time: nil)
-    if location
+    if location.present?
       if location.end_time.nil?
         "n/a"
       else 
