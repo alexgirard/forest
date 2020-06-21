@@ -13,7 +13,7 @@ const patients = { object: "patient", title: "Patients", btn: "Add Patient", hea
   { name: "Hospital Id", id: "hospital_id" },
   { name: "Room Identifier", id: "current_room" },
   { name: "Room Admittance", id: "entry_time" },
-  { name: "Room Discharge", id: "exit_time" },
+  { name: "Room Discharge", id: "exit_time", hide: true },
 ]};
 const staff = { object: "staff", title: "Staff", btn: "Add Staff", headings: [
   { name: "Badge #", id: "badge" },
@@ -25,7 +25,7 @@ const staff = { object: "staff", title: "Staff", btn: "Add Staff", headings: [
 ]};
 const infections = { object: "infection", title: "Infections", headings: [
   { name: "Patient", id: "patient_id" },
-  { name: "Notes", id: "notes" },
+  { name: "Type", id: "notes" },
   { name: "Status", id: "status" },
   { name: "Hai", id: "hai" },
   { name: "Start", id: "start" },
@@ -40,7 +40,7 @@ const TabUnderline = styled.div`
   cursor: pointer;
 `;
 
-const AddButton = styled.button`
+const StyledButton = styled.button`
   unset: all;
   padding: 0.5rem 1rem;
   background-color: rgba(14, 103, 23, 0.2);
@@ -63,10 +63,10 @@ const PeopleTabs = ({ tabs, peopleTabInfo, switchPeopleTab, setModalShow }) => (
       ))}
     </div>
     {!!peopleTabInfo.btn && (
-      <AddButton onClick={() => setModalShow(true)}>
+      <StyledButton onClick={() => setModalShow(true)}>
         <i className="fa fa-plus mr-2" />
         {peopleTabInfo.btn}
-      </AddButton>
+      </StyledButton>
     )}
   </div>
 );
@@ -75,6 +75,11 @@ const StyledTable = styled(Table)`
   th {
     background-color: rgba(14, 103, 23, 0.2);
     font-weight: 500;
+  }
+
+  .edit {
+    width: 1px;
+    white-space: nowrap;
   }
 `;
 
@@ -120,7 +125,9 @@ const StaffInfo = ({ staff, ...props }) => {
           <td>{`${s.exposure}`}</td>
           <td>{`${s.email}`}</td>
           <td>{`${s.phone}`}</td>
-          <td><button onClick={() => setEditInfo(s)}>Edit</button><button onClick={() => handleStaffDelete(s.id)}>Delete</button></td>
+          <td className="edit">
+            <StyledButton onClick={() => setEditInfo(s)}>Edit</StyledButton><StyledButton onClick={() => handleStaffDelete(s.id)}>Delete</StyledButton>
+          </td>
         </tr>
       ))}
       <EditModal modalTitle="Edit Staff" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
@@ -166,7 +173,7 @@ const PatientInfo = ({ patients, ...props }) => {
           <td>{`${p.current_room}`}</td>
           <td>{`${p.entry_time}`}</td>
           <td>{`${p.exit_time}`}</td>
-          <td><button onClick={() => setEditInfo(p)}>Edit</button><button onClick={() => handlePatientDelete(p.id)}>Delete</button></td>
+          <td className="edit"><StyledButton onClick={() => setEditInfo(p)}>Edit</StyledButton><StyledButton onClick={() => handlePatientDelete(p.id)}>Delete</StyledButton></td>
         </tr>
       ))}
       <EditModal modalTitle="Edit Patient" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
@@ -209,7 +216,7 @@ const RoomInfo = ({ rooms, ...props }) => {
         <tr key={r.id}>
           <td>{`${r.identifier}`}</td>
           <td>{`${r.current_patient}`}</td>
-          <td><button onClick={() => setEditInfo(r)}>Edit</button><button onClick={() => handleRoomDelete(r.id)}>Delete</button></td>
+          <td className="edit"><StyledButton onClick={() => setEditInfo(r)}>Edit</StyledButton><StyledButton onClick={() => handleRoomDelete(r.id)}>Delete</StyledButton></td>
         </tr>
       ))}
       <EditModal modalTitle="Edit Room" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
@@ -256,10 +263,10 @@ const InfectionInfo = ({ infections, ...props }) => {
           <td>{`${i.hai}`}</td>
           <td>{`${i.start}`}</td>
           <td>{`${i.incubation}`}</td>            
-          <td><button onClick={() => setEditInfo(i)}>Edit</button><button onClick={() => handleInfectionDelete(i.id)}>Delete</button></td>
+          <td className="edit"><StyledButton onClick={() => setEditInfo(i)}>Edit</StyledButton><StyledButton onClick={() => handleInfectionDelete(i.id)}>Delete</StyledButton></td>
         </tr>
       ))}
-      <EditModal modalTitle="Edit Room" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
+      <EditModal modalTitle="Edit Infection" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
     </tbody>
   )
 }
@@ -323,7 +330,8 @@ const People = ({ staff, patients, rooms, infections }) => {
       <StyledTable striped bordered hover>
         <thead>
           <tr>
-            {peopleTabInfo.headings.map(({ name }) => <th>{name}</th>)}
+            {peopleTabInfo.headings.map(({ name, hide }) => hide ? null : <th>{name}</th>)}
+            <th className="edit">Actions</th>
           </tr>
         </thead>
         {/* Change onSubmit below for edit */}

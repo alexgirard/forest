@@ -9,11 +9,13 @@
     "@rails/webpacker": "4.2.2",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "bootstrap": "^4.5.0",
+    "lodash": "^4.17.15",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
     "react_ujs": "^2.6.1",
+    "recharts": "^1.8.5",
     "styled-components": "^5.1.1",
     "turbolinks": "^5.2.0"
   },

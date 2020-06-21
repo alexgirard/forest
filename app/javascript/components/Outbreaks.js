@@ -119,7 +119,7 @@ const NotifyStep = ({ submitInfection, nextStep, updateField, staffInfections}) 
 
   return (
     <>
-      <h5 className="mb-4">What is the infection's incubation period (in days)?</h5>
+      <h5 className="mb-4">Please enter the desired incubation period (in days).</h5>
       <Container>
         <Form.Control type="text" placeholder="Incubation period" onChange={event => updatePeriod(event.target.value)} />
         <StyledButton className="my-4 w-auto" onClick={() => handleNextClick()}>Next</StyledButton>

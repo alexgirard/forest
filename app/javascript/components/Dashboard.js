@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import SideBar from './SideBar';
 import People from './People';
 import Outbreaks from './Outbreaks';
+import Overview from './Overview';
 
 const Logo = require('../../assets/images/logo.png');
 
@@ -22,7 +23,7 @@ const Dashboard = ({staff, patients, rooms, infections, entries}) => {
   const [curTab, switchTab] = useState("Dashboard");
 
   const tabs = [
-    { icon: "fa-table",  name: "Dashboard", component: <p>dash</p> },
+    { icon: "fa-table",  name: "Dashboard", component: <Overview staff={staff} patients={patients} rooms={rooms} infections={infections} /> },
     { icon: "fa-user",   name: "People",    component: <People staff={staff} patients={patients} rooms={rooms} infections={infections}/> },
     { icon: "fa-fire",   name: "Log Infection",  component: <Outbreaks /> },
   ];
