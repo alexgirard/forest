@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Form } from 'react-bootstrap';
 
-import Modal from './Modal';
+import ModalTemplate from './ModalTemplate';
 
 const StyledButton = styled.button`
   unset: all;
@@ -22,7 +22,7 @@ const AddModal = ({ peopleTabInfo, ...restProps }) => {
   const update = (key, value) => updateForm({ ...form, [key]: value });
 
   return (
-    <Modal title={peopleTabInfo.btn} {...restProps}>
+    <ModalTemplate title={peopleTabInfo.btn} {...restProps}>
       {peopleTabInfo.headings.map(({ name, id, hideEdit }) => hideEdit ? null :(
         <Form.Group>
           <Form.Label>{name}</Form.Label>
@@ -33,7 +33,7 @@ const AddModal = ({ peopleTabInfo, ...restProps }) => {
       <StyledButton className="py-2" type="submit" onClick={() => { restProps.onSubmit(peopleTabInfo.object, form); restProps.onHide(); }}>
         Submit
       </StyledButton>
-    </Modal>
+    </ModalTemplate>
   );
 };
 

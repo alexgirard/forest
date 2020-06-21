@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Modal } from 'react-bootstrap';
+import { Modal, Table } from 'react-bootstrap';
 
 const StyledTable = styled(Table)`
   th {
@@ -9,7 +9,7 @@ const StyledTable = styled(Table)`
   }
 `;
 
-const EntriesModal = ({ entries, modalTitle, peopleTabInfo, ...props }) => (
+const EntryModal = ({ entries, modalTitle, peopleTabInfo, ...props }) => (
   <Modal
     {...props}
     size="lg"
@@ -38,4 +38,4 @@ const EntriesModal = ({ entries, modalTitle, peopleTabInfo, ...props }) => (
   </Modal>
 );
 
-export default EntriesModal;
+export default EntryModal;

@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 
 import AddModal from './AddModal';
 import EditModal from './EditModal';
-import EntriesModal from './EntriesModal';
+import EntryModal from './EntryModal';
 
 const rooms = { object: "room", title: "Rooms", btn: "Add Room", 
   entries: [{ name: "Time", id: "time"}, { name: "Badge #", id: "staff_id"}], // FIXME: should be badge
@@ -37,7 +37,7 @@ const infections = { object: "infection", title: "Infections", headings: [
   { name: "Patient", id: "patient_id" },
   { name: "Type", id: "notes" },
   { name: "Status", id: "status" },
-  { name: "Hai", id: "hai" },
+  { name: "HAI", id: "hai" },
   { name: "Start", id: "start" },
   { name: "Incubation", id: "incubation" },
 ]};
@@ -135,32 +135,35 @@ const StaffInfo = ({ staff, entries, onSubmit, ...props }) => {
     })
   }
 
-  // const staffEntries = entryInfo => !entryInfo ? [] : _.filter(entries, e => e.badge == entryInfo);
+  const staffEntries = entryInfo => !entryInfo ? [] : _.filter(entries, e => e.badge == entryInfo);
 
   return (
-    <tbody>
-      {staff.map(s => (
-        <tr className="entries" key={s.id}>
-          <td onClick={() => setEntryInfo(s.badge)}>{`${s.badge}`}</td>
-          <td>{`${s.first_name}`}</td>
-          <td>{`${s.last_name}`}</td>
-          <td>{`${s.exposure}`}</td>
-          <td>{`${s.email}`}</td>
-          <td>{`${s.phone}`}</td>
-          <td className="edit">
-            <StyledButton onClick={() => setEditInfo(s)}>Edit</StyledButton>
-            <StyledButton onClick={() => handleStaffDelete(s.id)}>Delete</StyledButton>
-          </td>
-        </tr>
-      ))}
-      <EditModal modalTitle="Edit Staff" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} onSubmit={onSubmit} {...props} />
-      <EntriesModal modalTitle={`Staff # ${entryInfo} Room Entries`} show={!!entryInfo} onHide={() => setEntryInfo(null)} entries={[]} {...props} />
-    </tbody>
-  )
-}
+    <>
+      <tbody>
+        {staff.map(s => (
+          <tr onClick={() => setEntryInfo(s.badge)} className="entries" key={s.id}>
+            <td>{`${s.badge}`}</td>
+            <td>{`${s.first_name}`}</td>
+            <td>{`${s.last_name}`}</td>
+            <td>{`${s.exposure}`}</td>
+            <td>{`${s.email}`}</td>
+            <td>{`${s.phone}`}</td>
+            <td className="edit">
+              <StyledButton onClick={e => { e.stopPropagation(); setEditInfo(s); }}>Edit</StyledButton>
+              <StyledButton onClick={e => { e.stopPropagation(); handleStaffDelete(s.id); }}>Delete</StyledButton>
+            </td>
+          </tr>
+        ))}
+        <EditModal modalTitle="Edit Staff" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} onSubmit={onSubmit} {...props} />
+        <EntryModal modalTitle={`Staff #${entryInfo} Room Entries`} show={!!entryInfo} onHide={() => setEntryInfo(null)} entries={staffEntries(entryInfo)} {...props} />
+      </tbody>
+    </>
+  );
+};
 
-const PatientInfo = ({ patients, ...props }) => {
+const PatientInfo = ({ patients, entries, ...props }) => {
   const [editInfo, setEditInfo] = useState(false);
+  const [entryInfo, setEntryInfo] = useState(null);
 
   const handlePatientDelete = id => {
     var token = document.getElementsByName('csrf-token')[0].content
@@ -189,25 +192,31 @@ const PatientInfo = ({ patients, ...props }) => {
     })
   }
 
-  return(
+  const staffEntries = entryInfo => !entryInfo ? [] : _.filter(entries, e => e.patient_id == entryInfo);
+
+  return (
     <tbody>
       {patients.map(p => (
-        <tr className="entries" key={p.id}>
+        <tr onClick={() => setEntryInfo(p.hospital_id)} className="entries" key={p.id}>
           <td>{`${p.hospital_id}`}</td>
           <td>{`${p.current_room}`}</td>
           <td>{`${p.entry_time}`}</td>
           <td className="edit">
-            <StyledButton onClick={() => setEditInfo(p)}>Edit</StyledButton>
-            <StyledButton onClick={() => handlePatientDelete(p.id)}>Delete</StyledButton></td>
+            <StyledButton onClick={e => { e.stopPropagation(); setEditInfo(p); }}>Edit</StyledButton>
+            <StyledButton onClick={e => { e.stopPropagation(); handleStaffDelete(p.id); }}>Delete</StyledButton>
+          </td>
         </tr>
       ))}
       <EditModal modalTitle="Edit Patient" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
+      <EntryModal modalTitle={`Patient #${entryInfo} Staff Room Entries`} show={!!entryInfo} onHide={() => setEntryInfo(null)} entries={staffEntries(entryInfo)} {...props} />
     </tbody>
-  )
-}
+  );
+};
 
-const RoomInfo = ({ rooms, ...props }) => {
+const RoomInfo = ({ rooms, entries, ...props }) => {
   const [editInfo, setEditInfo] = useState(false);
+  const [entryInfo, setEntryInfo] = useState(null);
+  
   const handleRoomDelete = id => {
     var token = document.getElementsByName('csrf-token')[0].content
     fetch(`http://localhost:3000/rooms/${id}`, 
@@ -235,18 +244,22 @@ const RoomInfo = ({ rooms, ...props }) => {
     })
   }
 
+  const staffEntries = entryInfo => !entryInfo ? [] : _.filter(entries, e => e.room_id == entryInfo);
+
   return (
     <tbody>
       {rooms.map(r => (
-        <tr className="entries" key={r.id}>
+        <tr onClick={() => setEntryInfo(r.identifier)} className="entries" key={r.id}>
           <td>{`${r.identifier}`}</td>
           <td>{`${r.current_patient}`}</td>
           <td className="edit">
-            <StyledButton onClick={() => setEditInfo(r)}>Edit</StyledButton>
-            <StyledButton onClick={() => handleRoomDelete(r.id)}>Delete</StyledButton></td>
+            <StyledButton onClick={e => { e.stopPropagation(); setEditInfo(r); }}>Edit</StyledButton>
+            <StyledButton onClick={e => { e.stopPropagation(); handleStaffDelete(r.id); }}>Delete</StyledButton>
+          </td>
         </tr>
       ))}
       <EditModal modalTitle="Edit Room" show={!!editInfo} onEditSubmit={submitEdit} onHide={() => setEditInfo(null)} info={editInfo} {...props} />
+      <EntryModal modalTitle={`Room #${entryInfo} Entries`} show={!!entryInfo} onHide={() => setEntryInfo(null)} entries={staffEntries(entryInfo)} {...props} />
     </tbody>
   )
 }

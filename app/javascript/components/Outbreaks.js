@@ -104,11 +104,11 @@ const HaiStep = props => (
   />
 );
 
-const PatientStep = ({ nextStep, updateField }) => (
+const PatientStep = ({ nextStep, updateField, back, info, curStep }) => (
   <>
     <h5 className="mb-4">What is the patient's hospital id?</h5>
     <Container>
-      <Form.Control type="text" placeholder="patient id" onChange={event => updateField(event.target.value)} />
+      <Form.Control type="text" placeholder="patient id" defaultValue={info[steps[curStep]]} onChange={event => updateField(event.target.value)} />
     </Container>
     <div className="d-flex mt-5 justify-content-between">
       <StyledButton className="my-4 d-block" onClick={() => back()}> ← Back</StyledButton>
@@ -184,13 +184,13 @@ const EmailStep = ({ nextStep }) => (
 );
 
 
-const ThanksStep = ({ nextStep }) => (
+const ThanksStep = ({ nextStep, clearInfo }) => (
   <>
     <h5 className="mb-4">Sent!</h5>
     <Container>
       <i className="pb-3 fa fa-paper-plane fa-5x mr-2" />
       <br />
-      <StyledButton className="my-3 w-auto" onClick={() => nextStep()}>Log another infection</StyledButton>
+      <StyledButton className="my-3 w-auto" onClick={() => { clearInfo(); nextStep(); }}>Log another infection</StyledButton>
     </Container>
   </>
 );
@@ -206,7 +206,7 @@ const Pill = styled(Button)`
   }
 `;
 
-const TypeStep = ({ nextStep, updateField, infections }) => {
+const TypeStep = ({ nextStep, updateField, infections, info, curStep }) => {
   const [infection, updateInfection] = useState(null);
   
   const currentInfections = _.filter(_.keys(_.groupBy(infections, "notes"), k => k != "null"));
@@ -223,13 +223,13 @@ const TypeStep = ({ nextStep, updateField, infections }) => {
           placeholder="Type to filter..."
           onChange={(e) => { updateInfection(e.target.value) }}
           value={infection}
+          defaultValue={info[steps[curStep]]}
         />
         <div className="d-flex">
           {buttons.filter((child) => !infection || child.props.children.toLowerCase().startsWith(infection.toLowerCase()))}
         </div>
       </Container>
-      <div className="d-flex mt-5 justify-content-between">
-        <StyledButton className="my-4 d-block" onClick={() => back()}> ← Back</StyledButton>
+      <div className="d-flex mt-5 justify-content-end">
         <StyledButton className="my-4 w-auto" onClick={() => { updateField(infection); nextStep(); }}>Next →</StyledButton>
       </div>
     </>
@@ -271,6 +271,7 @@ const Outbreaks = ({ infections }) => {
   }
   const back = () => changeStep(curStep - 1);
   const updateField = value => updateInfo({ ...info, [steps[curStep]]: value });
+  const clearInfo = () => updateInfo({});
 
   const submitInfection = (period) => {
     const temp = {...info,period: period}
@@ -302,6 +303,7 @@ const Outbreaks = ({ infections }) => {
           curStep={curStep}
           nextStep={nextStep}
           updateField={updateField}
+          clearInfo={clearInfo}
           submitInfection={submitInfection}
           staffInfections={staffInfections}
           infections={infections}
