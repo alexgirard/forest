@@ -8,10 +8,13 @@ class PatientsController < ApplicationController
     patient.active = true
     patient.save!
     location = PatientLocation.new 
-    location.room_id = params[:patient][:room_id]
+    room = Room.find_by(identifier: params[:patient][:current_room])
+    byebug
+    location.room_id = room.id
     location.patient_id = patient.id
     location.start_time = params[:patient][:start_time]
     location.end_time = params[:patient][:end_time]
+    byebug
     location.save!
   end
 

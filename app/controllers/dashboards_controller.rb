@@ -6,6 +6,7 @@ class DashboardsController < ApplicationController
     patients = Patient.where(active: true)
     rooms = Room.all
     infections = Infection.all
-    render component: 'Dashboard', props: {staff: staff, patients: patients, rooms: rooms, infections: infections}
+    entries = Entry.all
+    render component: 'Dashboard', props: {staff: staff, patients: patients, rooms: rooms, infections: infections, entries: entries}
   end
 end

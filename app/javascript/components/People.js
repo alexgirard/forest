@@ -11,7 +11,7 @@ const rooms = { object: "room", title: "Rooms", btn: "Add Room", headings: [
 ]};
 const patients = { object: "patient", title: "Patients", btn: "Add Patient", headings: [
   { name: "Hospital Id", id: "hospital_id" },
-  { name: "Room Id", id: "current_room" },
+  { name: "Room Identifier", id: "current_room" },
   { name: "Room Admittance", id: "entry_time" },
   { name: "Room Discharge", id: "exit_time" },
 ]};

@@ -18,7 +18,7 @@ const TopBar = () => (
   </TopBarContainer>
 );
 
-const Dashboard = ({staff, patients, rooms, infections}) => {
+const Dashboard = ({staff, patients, rooms, infections, entries}) => {
   const [curTab, switchTab] = useState("Dashboard");
 
   const tabs = [

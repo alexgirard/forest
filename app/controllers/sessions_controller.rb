@@ -17,7 +17,7 @@ class SessionsController < Devise::SessionsController
   def destroy
     sign_out(@user)
     render :json=> {:success=>true}
-    redirect_to dashboard: 'index'
+    #redirect_to dashboard: 'index'
   end
 
 
