@@ -46,4 +46,17 @@ class Patient < ApplicationRecord
       "n/a"
     end
   end
+
+  def all_rooms 
+    PatientLocation.where(patient_id: self.id)
+  end
+
+  def rooms_since(date, days)
+    end_date = date + days.days
+    locations = PatientLocation.where(patient_id: self.id, start_time: end_date..date).or(PatientLocation.where(patient_id: self.id, end_time: end_date..date))
+    locations.each do |l|
+      rooms << l.room 
+    end
+    rooms
+  end
 end

@@ -7,7 +7,8 @@ class SessionsController < Devise::SessionsController
 
     if @user.valid_password?(user_params[:password])
       sign_in :user, @user
-      render json: @user
+      #render json: @user
+      redirect_to dashboard: 'index'
     else
       invalid_login_attempt
     end
@@ -16,6 +17,7 @@ class SessionsController < Devise::SessionsController
   def destroy
     sign_out(@user)
     render :json=> {:success=>true}
+    redirect_to dashboard: 'index'
   end
 
 

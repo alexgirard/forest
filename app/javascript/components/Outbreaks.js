@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Card, Form, Container, ProgressBar } from 'react-bootstrap';
+import { Card, Form, Container, ProgressBar, Table } from 'react-bootstrap';
 
 const Grid = styled.div`
   display: grid;
@@ -43,6 +43,13 @@ const StyledButton = styled.button`
   }
 `;
 
+const StyledTable = styled(Table)`
+  th {
+    background-color: rgba(14, 103, 23, 0.2);
+    font-weight: 500;
+  }
+`;
+
 const RadioBtn = ({ value, updateField, nextStep, children }) => (
   <Radio onClick={() => { updateField(value); nextStep(); }}>
     {children}
@@ -68,7 +75,7 @@ const StepTemplate = ({ desc, btns, ...props }) => (
 
 const StatusStep = props => (
   <StepTemplate
-    desc="Please select if the case is confirmed or suspected to continue."
+    desc="Is infection confirmed or suspected?"
     btns={[
       { icon: "fa-check", name: "Confirmed" },
       { icon: "fa-search", name: "Suspected" },
@@ -79,7 +86,7 @@ const StatusStep = props => (
 
 const HaiStep = props => (
   <StepTemplate
-    desc="Was this a hospital acquired infection(HAI)?"
+    desc="Is this infection a hospital acquired?"
     btns={[
       { icon: "fa-check", name: "Yes" },
       { icon: "fa-times", name: "No" },
@@ -91,7 +98,7 @@ const HaiStep = props => (
 
 const PatientStep = ({ nextStep, updateField }) => (
   <>
-    <h5 className="mb-4">Please enter the patient id.</h5>
+    <h5 className="mb-4">What is the patient's hospital id?</h5>
     <Container>
       <Form.Control type="text" placeholder="patient id" onChange={event => updateField(event.target.value)} />
       <StyledButton className="my-4 w-auto" onClick={() => nextStep()}>Next step</StyledButton>
@@ -99,23 +106,51 @@ const PatientStep = ({ nextStep, updateField }) => (
   </>
 );
 
-const NotifyStep = ({ nextStep, updateField }) => {
+const NotifyStep = ({ submitInfection, nextStep, updateField, staffInfections}) => {
   const [period, updatePeriod] = useState(null);
   const [showResults, updateShow] = useState(false);
+  
+  const handleNextClick = () => {
+    submitInfection(period);
+    updateShow(true);
+  }
+
+  const data = Array.from(staffInfections);
 
   return (
     <>
-      <h5 className="mb-4">Please enter the desired incubation period.</h5>
+      <h5 className="mb-4">What is the infection's incubation period (in days)?</h5>
       <Container>
         <Form.Control type="text" placeholder="Incubation period" onChange={event => updatePeriod(event.target.value)} />
-        <StyledButton className="my-4 w-auto" onClick={() => updateShow(true)}>Next</StyledButton>
+        <StyledButton className="my-4 w-auto" onClick={() => handleNextClick()}>Next</StyledButton>
       </Container>
       {showResults && (
         <>
           <Container>
-            <h5 className="my-4">Below are the staff members that have come in contact with this patient within the specified incubation period. By clicking next we will notify them that they have come in contact.</h5>
-            <p>[table here]</p>
-            <StyledButton className="my-4 w-auto" onClick={() => { updateField(period); nextStep(); }}>Send notifications</StyledButton>
+            <h5 className="my-4">Below are the staff members that have come in contact with this patient within the specified incubation period. Click 'Send notification' to inform them.</h5>
+            <StyledTable striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Badge #</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map(s => (
+                  <tr key={s.id}>
+                    <td>{`${s.badge}`}</td>
+                    <td>{`${s.first_name}`}</td>
+                    <td>{`${s.last_name}`}</td>
+                    <td>{`${s.email}`}</td>
+                    <td>{`${s.phone}`}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </StyledTable>
+            <StyledButton className="my-4 w-auto" onClick={() => nextStep()}>Send notification</StyledButton>
           </Container>
         </>
       )}
@@ -125,11 +160,11 @@ const NotifyStep = ({ nextStep, updateField }) => {
 
 const ThanksStep = ({ nextStep }) => (
   <>
-    <h5 className="mb-4">Thank you!</h5>
+    <h5 className="mb-4">Sent!</h5>
     <Container>
       <i className="pb-3 fa fa-paper-plane fa-5x mr-2" />
       <br />
-      <StyledButton className="my-3 w-auto" onClick={() => nextStep()}>Back to outbreak registration</StyledButton>
+      <StyledButton className="my-3 w-auto" onClick={() => nextStep()}>Log another infection</StyledButton>
     </Container>
   </>
 );
@@ -155,6 +190,7 @@ const StepContent = ({ curStep, ...props }) => {
 const Outbreaks = ({ }) => {
   const [curStep, changeStep] = useState(0);
   const [info, updateInfo] = useState({});
+  const [staffInfections, updateInfections] = useState({staff: {name: "steve"}});
   
   const nextStep = () => {
     if (info.status != "Confirmed" & curStep == 2) {
@@ -167,12 +203,34 @@ const Outbreaks = ({ }) => {
   }
   const back = () => changeStep(curStep - 1);
   const updateField = value => updateInfo({ ...info, [steps[curStep]]: value });
-  
+
+  const submitInfection = (period) => {
+    const temp = {...info,period: period}
+    var body = {infection: {
+      hai: temp.hai,
+      status: temp.status,
+      patient_id: temp.patient,
+      incubation: temp.period,
+    }}
+    var token = document.getElementsByName('csrf-token')[0].content
+    fetch('http://localhost:3000/infections', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': token
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify(body),
+    }).then((response) => {return response.json()}).then(data => {
+      updateInfections(data);
+    })
+  }
+
   return (
     <div className="p-5 mt-5 d-flex flex-column justfiy-content-center text-center">
       <Progress now={((curStep+1)/steps.length) * 100} />
-      <StepContent curStep={curStep} nextStep={nextStep} updateField={updateField} />
-      {curStep != 0 && <StyledButton className="my-4 d-block" onClick={() => back()}> ← Back</StyledButton>}
+      <StepContent curStep={curStep} nextStep={nextStep} updateField={updateField} submitInfection={submitInfection} staffInfections={staffInfections}/>
+      {curStep != 0 && curStep != 3 && curStep != 4 && <StyledButton className="my-4 d-block" onClick={() => back()}> ← Back</StyledButton>}
     </div>
   );
 };

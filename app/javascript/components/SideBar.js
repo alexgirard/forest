@@ -25,6 +25,19 @@ const SideBarContainer = styled.div`
   }
 `;
 
+const handleLogout = () => {
+  console.log("logging out");
+  var token = document.getElementsByName('csrf-token')[0].content
+  fetch('http://localhost:3000/users/sign_out', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRF-Token': token
+    },
+    credentials: 'same-origin',
+  })
+}
+
 const SideBar = ({ tabs, curTab, switchTab }) => (
   <SideBarContainer className="h-100 d-flex flex-column justify-content-between">
     <div>
@@ -32,7 +45,7 @@ const SideBar = ({ tabs, curTab, switchTab }) => (
         <SideItem {...tab} active={curTab === tab.name} switchTab={switchTab} />
       ))}
     </div>
-    <div className="d-flex justify-content-center p-3">logout</div>
+    <div className="d-flex justify-content-center p-3" onClick={handleLogout}>logout</div>
   </SideBarContainer>
 );
 
