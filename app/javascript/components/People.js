@@ -19,6 +19,7 @@ const staff = { object: "staff", title: "Staff", btn: "Add Staff", headings: [
   { name: "Badge #", id: "badge" },
   { name: "First Name", id: "first_name" },
   { name: "Last Name", id: "last_name" },
+  { name: "Exposure", id: "exposure"},
   { name: "Email", id: "email" },
   { name: "Phone", id: "phone" },
 ]};
@@ -116,6 +117,7 @@ const StaffInfo = ({ staff, ...props }) => {
           <td>{`${s.badge}`}</td>
           <td>{`${s.first_name}`}</td>
           <td>{`${s.last_name}`}</td>
+          <td>{`${s.exposure}`}</td>
           <td>{`${s.email}`}</td>
           <td>{`${s.phone}`}</td>
           <td><button onClick={() => setEditInfo(s)}>Edit</button><button onClick={() => handleStaffDelete(s.id)}>Delete</button></td>

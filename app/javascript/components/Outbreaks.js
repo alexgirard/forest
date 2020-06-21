@@ -128,7 +128,6 @@ const NotifyStep = ({ submitInfection, nextStep, updateField, staffInfections}) 
         <>
           <Container>
             <h5 className="my-4">Below are the staff members that have come in contact with this patient within the specified incubation period. Click 'Send notification' to inform them.</h5>
-            <p>[table here]</p>
             <StyledTable striped bordered hover>
               <thead>
                 <tr>

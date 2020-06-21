@@ -18,7 +18,15 @@ class InfectionsController < ApplicationController
     rooms.each do |r|
       entries = Entry.where(room_id: r.id, time: end_date..infection.start)
       entries.each do |e|
-        contact_staff << e.staff 
+        s = e.staff
+        byebug
+        if params[:infection][:status] == ('Confirmed')
+          s.exposure = "Confirmed"
+        elsif params[:infection][:status] == ('Suspected')
+          s.exposure = "Suspected"
+        end
+        s.save!
+        contact_staff << s
       end
     end
 
